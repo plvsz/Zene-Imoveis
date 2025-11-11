@@ -1,18 +1,15 @@
-import { writeFile } from 'fs/promises';
-import { join } from 'path';
-import { tmpdir } from 'os';
-
-export default async (req, context) => {
+exports.handler = async (event, context) => {
   // Apenas POST
-  if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ erro: 'Método não permitido' }), { 
-      status: 405,
-      headers: { 'Content-Type': 'application/json' }
-    });
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ erro: 'Método não permitido' })
+    };
   }
 
   try {
-    const data = await req.json();
+    const data = JSON.parse(event.body);
     const dataHora = new Date().toLocaleString('pt-BR');
     const timestamp = Date.now();
     const id_ficha = `ficha_${timestamp}.json`;
@@ -30,34 +27,30 @@ export default async (req, context) => {
     console.log('📊 Dados:', fichaCompleta);
 
     // Retornar sucesso
-    return new Response(
-      JSON.stringify({
+    return {
+      statusCode: 200,
+      headers: { 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
+      body: JSON.stringify({
         sucesso: true,
         mensagem: 'Ficha salva com sucesso!',
         id_ficha: id_ficha,
         data_hora: dataHora,
         dados: fichaCompleta
-      }),
-      {
-        status: 200,
-        headers: { 
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*'
-        }
-      }
-    );
+      })
+    };
 
   } catch (error) {
     console.error('❌ Erro:', error);
-    return new Response(
-      JSON.stringify({
+    return {
+      statusCode: 500,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         sucesso: false,
         erro: error.message
-      }),
-      {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      }
-    );
+      })
+    };
   }
 };
