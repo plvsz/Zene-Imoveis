@@ -1,0 +1,13 @@
+{
+  "name": "zene-imoveis-ficha-captacao",
+  "version": "1.0.0",
+  "description": "Ficha de Captação de Imóveis - Zene Imóveis",
+  "type": "module",
+  "scripts": {
+    "dev": "node api/save-ficha.js",
+    "build": "echo 'Build complete'"
+  },
+  "keywords": ["imóveis", "captação", "formulário"],
+  "author": "Zene Imóveis",
+  "license": "MIT"
+}

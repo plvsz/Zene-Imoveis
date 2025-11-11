@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>Zene Imóveis — Ficha de Captação</title>
+</head>
+<body>
+  <header class="site-header">
+    <h1>Zene Imóveis — Ficha de Captação</h1>
+    <p class="subtitle">Preencha os dados do proprietário e do imóvel</p>
+  </header>
+
+  <main class="container">
+    <form id="ficha" class="form" enctype="multipart/form-data" autocomplete="off">
+      <fieldset>
+        <legend>I. Proprietário / Cônjuge</legend>
+        <div class="grid">
+          <label><span>Proprietário / Razão Social</span><input name="owner_name" type="text" placeholder="Nome ou razão social" /></label>
+          <label><span>Conjuge / Razão Social (se aplicável)</span><input name="spouse_name" type="text" placeholder="Nome do cônjuge / razão social" /></label>
+          <label><span>CPF / CNPJ (proprietário)</span><input name="owner_cpf_cnpj" type="text" inputmode="numeric" placeholder="CPF ou CNPJ" /></label>
+          <label><span>CPF / CNPJ (cônjuge)</span><input name="spouse_cpf_cnpj" type="text" inputmode="numeric" placeholder="CPF ou CNPJ" /></label>
+          <label><span>Identidade (proprietário)</span><input name="owner_id" type="text" placeholder="RG / Documento" /></label>
+          <label><span>Identidade (cônjuge)</span><input name="spouse_id" type="text" placeholder="RG / Documento" /></label>
+          <label><span>Data de Nascimento (proprietário)</span><input class="date" name="owner_birth" type="text" placeholder="DD/MM/YYYY" /></label>
+          <label><span>Data de Nascimento (cônjuge)</span><input class="date" name="spouse_birth" type="text" placeholder="DD/MM/YYYY" /></label>
+          <label><span>Estado civil (proprietário)</span><input name="owner_marital" type="text" placeholder="Solteiro(a) / Casado(a)" /></label>
+          <label><span>Estado civil (cônjuge)</span><input name="spouse_marital" type="text" placeholder="Solteiro(a) / Casado(a)" /></label>
+          <label><span>Telefone (proprietário)</span><input class="phone" name="owner_phone" type="tel" placeholder="(xx) x xxxx-xxxx" /></label>
+          <label><span>Telefone (cônjuge)</span><input class="phone" name="spouse_phone" type="tel" placeholder="(xx) x xxxx-xxxx" /></label>
+          <label><span>Profissão (proprietário)</span><input name="owner_profession" type="text" placeholder="Profissão" /></label>
+          <label><span>Profissão (cônjuge)</span><input name="spouse_profession" type="text" placeholder="Profissão" /></label>
+          <label><span>E-mail 1</span><input name="email1" type="email" placeholder="email@exemplo.com" /></label>
+          <label><span>E-mail 2</span><input name="email2" type="email" placeholder="email@exemplo.com" /></label>
+          <label class="full"><span>Endereço completo (Residencial)</span><input name="res_address" type="text" placeholder="Rua, número, complemento" /></label>
+          <label><span>Bairro (Residencial)</span><input name="res_neighborhood" type="text" placeholder="Bairro" /></label>
+          <label><span>Cidade (Residencial)</span><input name="res_city" type="text" placeholder="Cidade" /></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>III. Detalhes da Autorização e do Imóvel</legend>
+
+        <div class="grid">
+          <label class="full"><span>Endereço completo (Imóvel)</span><input name="prop_address" type="text" placeholder="Rua, número, complemento" /></label>
+          <div class="option-group full">
+            <span>Finalidade:</span>
+            <label><input type="checkbox" name="finalidade_venda" /> Venda</label>
+            <label><input type="checkbox" name="finalidade_locacao" checked /> Locação</label>
+          </div> 
+
+          <div id="valor-imovel-container" class="full" style="display:none;">
+            <label><span>Valor do imóvel (R$)</span>
+              <input class="currency" name="valor_imovel" type="text" placeholder="R$ 0,00" />
+            </label>
+          </div>
+
+          <div id="comissao-venda-container" class="full" style="display:none;">
+            <label><span>Comissão de venda (6% do valor do imóvel)</span>
+              <input name="comissao_venda" type="text" placeholder="R$ 0,00" readonly />
+            </label>
+          </div>
+
+          <div id="valor-aluguel-container" class="full" style="display:none;">
+            <label><span>Valor do aluguel (R$)</span>
+              <input class="currency" name="valor_aluguel" type="text" placeholder="R$ 0,00" />
+            </label>
+          </div>
+          <div class="option-group">
+            <span>Exclusividade:</span>
+            <label><input type="radio" name="exclusividade" value="sim" /> Sim</label>
+            <label><input type="radio" name="exclusividade" value="nao" checked /> Não</label>
+          </div>
+
+          <!-- Quando exclusividade for 'sim' perguntar por quantos dias -->
+          <div id="exclusividade-dias" class="full" style="display:none;">
+            <label><span>Prazo de exclusividade (dias)</span>
+              <input name="exclusividade_dias" type="number" min="1" placeholder="Número de dias" />
+            </label>
+          </div>
+
+          <label><span>Bairro (Imóvel)</span><input name="prop_neighborhood" type="text" placeholder="Bairro" /></label>
+          <label><span>Cidade (Imóvel)</span><input name="prop_city" type="text" placeholder="Cidade" /></label>
+          <label><span>CEP (Imóvel)</span><input class="cep" name="prop_cep" type="text" inputmode="numeric" placeholder="CEP (ex: 12345-678)" maxlength="9" /></label>
+          <label><span>Condomínio (Valor)</span><input class="currency" name="condom_value" type="text" placeholder="R$ 0,00" /></label>
+
+          <label class="full"><span>% Imobiliária (1° Mês)</span><input type="number" name="perc_imobiliaria" min="1" max="100" step="0.01" value="50" placeholder="Ex: 50"></label>
+          <label class="full"><span>Taxa de Adm Mensal</span><input type="text" disabled value="10%"></label>
+
+          <div class="note full">Nota: Os valores acima podem ser alterados conforme necessário.</div>
+
+          <div class="option-group full">
+            <span>Prazo da Autorização:</span>
+            <label><input type="radio" name="prazo" value="45" /> 45 dias</label>
+            <label><input type="radio" name="prazo" value="90" /> 90 dias</label>
+            <label><input type="radio" name="prazo" value="120" /> 120 ou + dias</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>IV. Ficha de Captação de Locação — Detalhes Adicionais</legend>
+
+        <div class="grid">
+
+          <div class="option-group full">
+            <span>Tipo do Imóvel:</span>
+            <label><input type="checkbox" name="tipo_casa" /> Casa</label>
+            <label><input type="checkbox" name="tipo_casa_comercial" /> Casa Comercial</label>
+            <label><input type="checkbox" name="tipo_sala_comercial" /> Sala Comercial</label>
+            <label><input type="checkbox" name="tipo_apartamento" /> Apartamento</label>
+            <label><input type="checkbox" name="tipo_galpao" checked /> Galpão</label>
+            <label><input type="checkbox" name="tipo_loja" /> Loja</label>
+            <label><input type="checkbox" name="tipo_terreno" /> Terreno</label>
+          </div>
+
+          <div class="option-group full">
+            <span>Modelo de Locação:</span>
+            <label><input type="checkbox" name="modelo_caucao" /> Caução</label>
+            <label><input type="checkbox" name="modelo_seguro" /> Seguro Fiança</label>
+            <label><input type="checkbox" name="modelo_fiador" /> Fiador</label>
+          </div>
+
+          <label><span>Área construída (m²)</span><input name="area_const" type="number" min="0" step="0.01" placeholder="m²" /></label>
+          <label><span>Área útil (m²)</span><input name="area_util" type="number" min="0" step="0.01" placeholder="m²" /></label>
+
+          <div class="option-group full">
+            <span>Situação:</span>
+            <label><input type="checkbox" name="situacao_construcao" /> Em construção</label>
+            <label><input type="checkbox" name="situacao_novo" checked /> Novo</label>
+            <label><input type="checkbox" name="situacao_usado" /> Usado</label>
+          </div>
+
+          <label><span>Local das chaves</span>
+            <select name="local_chaves">
+              <option value="imobiliaria">Imobiliária</option>
+              <option value="proprietario">Proprietário</option>
+              <option value="outros">Outros</option>
+            </select>
+          </label>
+
+          <div class="option-group">
+            <span>Placa no local:</span>
+            <label><input type="radio" name="placa_local" value="sim" /> Sim</label>
+            <label><input type="radio" name="placa_local" value="nao" checked /> Não</label>
+          </div>
+
+          <div class="option-group full">
+            <span>Modelo (da Placa):</span>
+            <label><input type="checkbox" name="modelo_banner" /> Banner digital</label>
+            <label><input type="checkbox" name="modelo_adesivo" /> Adesivo</label>
+            <label><input type="checkbox" name="modelo_faixa" /> Faixa</label>
+          </div>
+
+          <div class="option-group full">
+            <span>Possui anúncio “direto com proprietário”:</span>
+            <label><input type="radio" name="anuncio_direto" value="sim" /> Sim</label>
+            <label><input type="radio" name="anuncio_direto" value="nao" checked /> Não</label>
+          </div>
+
+          <div class="option-group full">
+            <span>Exclusividade (captação):</span>
+            <label><input type="radio" name="captacao_exclusividade" value="nao" checked /> Não</label>
+            <label><input type="radio" name="captacao_exclusividade" value="sim" /> Sim</label>
+            <input class="date" type="text" name="captacao_exclusividade_data" placeholder="DD/MM/YYYY" />
+          </div>
+
+          <div class="option-group full">
+            <span>Documentação (marque existente):</span>
+            <label><input type="checkbox" name="doc_compra_venda" /> Contrato de compra e venda</label>
+            <label><input type="checkbox" name="doc_escritura" checked /> Escritura</label>
+            <label><input type="checkbox" name="doc_registro" checked /> Registro</label>
+            <label><input type="checkbox" name="doc_habite" /> Habite-se</label>
+            <label><input type="checkbox" name="doc_penhorado" /> Imóvel penhorado</label>
+            <label><input type="checkbox" name="doc_inventario" /> Em processo de inventário</label>
+            <input class="date" type="text" name="doc_inventario_data" placeholder="DD/MM/YYYY" />
+          </div>
+
+          <label class="full"><span>Descrição do Imóvel</span>
+            <textarea name="descricao" rows="4" placeholder="Descrição detalhada do imóvel..."></textarea>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>V. Anexos</legend>
+        <div class="grid">
+          <label class="full"><span>Conta Cemig (imagem ou PDF, até 5MB)</span>
+            <input id="cemig-file" name="cemig_file" type="file" accept="image/*,.pdf" />
+            <div id="cemig-preview" class="file-preview"></div>
+          </label>
+
+          <label class="full"><span>Conta Copasa (imagem ou PDF, até 5MB)</span>
+            <input id="copasa-file" name="copasa_file" type="file" accept="image/*,.pdf" />
+            <div id="copasa-preview" class="file-preview"></div>
+          </label>
+        </div>
+      </fieldset>
+
+      <div class="form-actions">
+        <button type="submit">Salvar ficha</button>
+        <button type="reset" class="muted">Limpar</button>
+        <button type="button" id="recuperar-rascunho" class="muted" style="display:none;">📥 Recuperar último rascunho</button>
+      </div>
+    </form>
+  </main>
+
+  <footer class="site-footer">
+    <small>Gerado pelo modelo — verifique todos os dados com o proprietário antes de publicar.</small>
+  </footer>
+  
+  <script>
+    // Mostrar/ocultar campos dependentes: exclusividade (dias), finalidade (valor do imóvel / valor do aluguel)
+    // e calcular a comissão de venda (6% do valor do imóvel)
+    document.addEventListener('DOMContentLoaded', function () {
+      /* Exclusividade (dias) */
+      var exclusivityRadios = document.querySelectorAll('input[name="exclusividade"]');
+      var exclusivityContainer = document.getElementById('exclusividade-dias');
+      var exclusivityInput = exclusivityContainer ? exclusivityContainer.querySelector('input[name="exclusividade_dias"]') : null;
+
+      function updateExclusividade() {
+        var checked = document.querySelector('input[name="exclusividade"]:checked');
+        if (checked && checked.value === 'sim') {
+          if (exclusivityContainer) exclusivityContainer.style.display = 'block';
+          if (exclusivityInput) exclusivityInput.required = true;
+        } else {
+          if (exclusivityContainer) exclusivityContainer.style.display = 'none';
+          if (exclusivityInput) { exclusivityInput.required = false; exclusivityInput.value = ''; }
+        }
+      }
+      if (exclusivityRadios.length) {
+        exclusivityRadios.forEach(function (r) { r.addEventListener('change', updateExclusividade); });
+        updateExclusividade();
+      }
+
+      /* Finalidade: Venda / Locação -> mostrar campos de valor correspondentes */
+      var vendaCheckbox = document.querySelector('input[name="finalidade_venda"]');
+      var locacaoCheckbox = document.querySelector('input[name="finalidade_locacao"]');
+      var valorImovelContainer = document.getElementById('valor-imovel-container');
+      var valorAluguelContainer = document.getElementById('valor-aluguel-container');
+      var valorImovelInput = valorImovelContainer ? valorImovelContainer.querySelector('input[name="valor_imovel"]') : null;
+      var valorAluguelInput = valorAluguelContainer ? valorAluguelContainer.querySelector('input[name="valor_aluguel"]') : null;
+
+      /* Comissão */
+      var comissaoContainer = document.getElementById('comissao-venda-container');
+      var comissaoInput = comissaoContainer ? comissaoContainer.querySelector('input[name="comissao_venda"]') : null;
+
+      function parseBRL(value) {
+        if (!value) return NaN;
+        var v = String(value).replace(/\s|R\$|\+/g, '');
+        // If contains comma, assume BR format where '.' is thousands and ',' is decimals
+        if (v.indexOf(',') > -1) {
+          v = v.replace(/\./g, '').replace(',', '.');
+        } else {
+          // remove any thousand separators (commas) just in case
+          v = v.replace(/,/g, '');
+        }
+        // remove any non-numeric (except dot and minus)
+        v = v.replace(/[^0-9.\-]/g, '');
+        return parseFloat(v);
+      }
+
+      function updateCommission() {
+        if (!valorImovelInput || !comissaoContainer || !comissaoInput) return;
+        var val = parseBRL(valorImovelInput.value);
+        if (!isFinite(val)) {
+          comissaoContainer.style.display = 'none';
+          comissaoInput.value = '';
+          return;
+        }
+        var com = val * 0.06;
+        try {
+          comissaoInput.value = com.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        } catch (e) {
+          comissaoInput.value = 'R$ ' + com.toFixed(2);
+        }
+        comissaoContainer.style.display = 'block';
+      }
+
+      function updateFinalidade() {
+        var imobContainerEl = document.getElementById('calculo-imobiliaria-container');
+        if (vendaCheckbox && vendaCheckbox.checked) {
+          if (valorImovelContainer) valorImovelContainer.style.display = 'block';
+          if (valorImovelInput) valorImovelInput.required = true;
+          // calculate commission when visible
+          updateCommission();
+          // Hide imobiliária calculation for venda
+          if (imobContainerEl) imobContainerEl.style.display = 'none';
+          // Limpar campos de locação
+          if (valorAluguelInput) valorAluguelInput.value = '';
+          if (imobContainerEl) imobContainerEl.remove();
+        } else {
+          if (valorImovelContainer) valorImovelContainer.style.display = 'none';
+          if (valorImovelInput) { valorImovelInput.required = false; valorImovelInput.value = ''; }
+          if (comissaoContainer) { comissaoContainer.style.display = 'none'; if (comissaoInput) comissaoInput.value = ''; }
+        }
+
+        if (locacaoCheckbox && locacaoCheckbox.checked) {
+          if (valorAluguelContainer) valorAluguelContainer.style.display = 'block';
+          if (valorAluguelInput) valorAluguelInput.required = true;
+          // Show imobiliária calculation para locação
+          if (imobContainerEl) imobContainerEl.style.display = 'block';
+          // Limpar campos de venda
+          if (valorImovelInput) valorImovelInput.value = '';
+          if (comissaoContainer) { comissaoContainer.style.display = 'none'; if (comissaoInput) comissaoInput.value = ''; }
+        } else {
+          if (valorAluguelContainer) valorAluguelContainer.style.display = 'none';
+          if (valorAluguelInput) { valorAluguelInput.required = false; valorAluguelInput.value = ''; }
+          if (imobContainerEl) imobContainerEl.style.display = 'none';
+        }
+      }
+
+      if (vendaCheckbox) vendaCheckbox.addEventListener('change', updateFinalidade);
+      if (locacaoCheckbox) locacaoCheckbox.addEventListener('change', updateFinalidade);
+      if (valorImovelInput) valorImovelInput.addEventListener('input', updateCommission);
+      updateFinalidade();
+
+      // --- Input masks: currency, phone and CEP ---
+      function formatCurrencyInput(e) {
+        var el = e.target;
+        var digits = el.value.replace(/\D/g, '');
+        if (!digits) { el.value = ''; return; }
+        var n = parseFloat(digits) / 100;
+        try {
+          el.value = n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        } catch (err) {
+          el.value = 'R$ ' + n.toFixed(2);
+        }
+      }
+
+      function maskPhoneInput(e) {
+        var el = e.target;
+        var v = el.value.replace(/\D/g, '');
+        if (!v) { el.value = ''; return; }
+        if (v.length > 11) v = v.slice(0, 11);
+        var d = v.slice(0, 2);
+        var rest = v.slice(2);
+        if (rest.length <= 4) {
+          el.value = '(' + d + ') ' + rest;
+        } else if (rest.length <= 8) {
+          el.value = '(' + d + ') ' + rest.slice(0, rest.length - 4) + '-' + rest.slice(-4);
+        } else {
+          // 9 digits after DDD -> (DD) X XXXX-XXXX -> rest length 9
+          var first = rest.charAt(0);
+          var a = rest.slice(1, 5);
+          var b = rest.slice(5, 9);
+          el.value = '(' + d + ') ' + first + ' ' + a + (b ? '-' + b : '');
+        }
+      }
+
+      function maskCEPInput(e) {
+        var el = e.target;
+        var v = el.value.replace(/\D/g, '').slice(0, 8);
+        if (v.length > 5) el.value = v.slice(0,5) + '-' + v.slice(5);
+        else el.value = v;
+      }
+
+      // === BUSCA DE CEP (ViaCEP) ===
+      function buscarCEP(cep) {
+        cep = cep.replace(/\D/g, '');
+        if (cep.length !== 8) return;
+        
+        var propNeighborhood = document.querySelector('input[name="prop_neighborhood"]');
+        var propCity = document.querySelector('input[name="prop_city"]');
+        
+        fetch('https://viacep.com.br/ws/' + cep + '/json/')
+          .then(response => response.json())
+          .then(data => {
+            if (data.erro) {
+              alert('CEP não encontrado');
+              propNeighborhood.value = '';
+              propCity.value = '';
+            } else {
+              propNeighborhood.value = data.bairro || '';
+              propCity.value = data.localidade || '';
+            }
+          })
+          .catch(error => console.error('Erro ao buscar CEP:', error));
+      }
+
+      // Attach masks
+      var currencyInputs = document.querySelectorAll('input.currency');
+      currencyInputs.forEach(function (inp) {
+        inp.addEventListener('input', formatCurrencyInput);
+        // format initial value if present
+        if (inp.value) formatCurrencyInput({ target: inp });
+      });
+
+      var phoneInputs = document.querySelectorAll('input.phone');
+      phoneInputs.forEach(function (p) { p.addEventListener('input', maskPhoneInput); });
+
+      var cepInputs = document.querySelectorAll('input.cep');
+      cepInputs.forEach(function (c) { 
+        c.addEventListener('input', maskCEPInput);
+        // Buscar CEP quando tiver 8 dígitos completos
+        c.addEventListener('change', function () {
+          if (this.value.replace(/\D/g, '').length === 8) {
+            buscarCEP(this.value);
+          }
+        });
+      });
+
+      // === File attachments: Cemig & Copasa ===
+      var MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+      var cemigInput = document.getElementById('cemig-file');
+      var copasaInput = document.getElementById('copasa-file');
+      var cemigPreview = document.getElementById('cemig-preview');
+      var copasaPreview = document.getElementById('copasa-preview');
+
+      function showFilePreview(file, container) {
+        container.innerHTML = '';
+        if (!file) return;
+        var name = document.createElement('div');
+        name.className = 'file-info';
+        name.textContent = file.name + ' (' + Math.round(file.size/1024) + ' KB)';
+
+        if (file.type.startsWith('image/')) {
+          var img = document.createElement('img');
+          img.className = 'thumb';
+          img.alt = file.name;
+          img.src = URL.createObjectURL(file);
+          img.onload = function() { URL.revokeObjectURL(img.src); };
+          container.appendChild(img);
+          container.appendChild(name);
+        } else {
+          // PDF or other: show icon + name
+          var icon = document.createElement('div');
+          icon.className = 'file-icon';
+          icon.textContent = 'PDF';
+          container.appendChild(icon);
+          container.appendChild(name);
+        }
+      }
+
+      function validateAndPreview(inputEl, previewEl) {
+        if (!inputEl || !previewEl) return;
+        var file = inputEl.files && inputEl.files[0];
+        if (!file) { previewEl.innerHTML = ''; return; }
+        
+        // Validate size
+        if (file.size > MAX_FILE_SIZE) {
+          alert('❌ Arquivo muito grande. Tamanho máximo: 5 MB.');
+          inputEl.value = '';
+          previewEl.innerHTML = '';
+          return;
+        }
+        
+        // Validate type
+        var allowed = ['application/pdf'];
+        if (!file.type.startsWith('image/') && allowed.indexOf(file.type) === -1) {
+          alert('❌ Tipo de arquivo não permitido. Use imagem ou PDF.');
+          inputEl.value = '';
+          previewEl.innerHTML = '';
+          return;
+        }
+        
+        // Validate image dimensions (se for imagem)
+        if (file.type.startsWith('image/')) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var img = new Image();
+            img.onload = function () {
+              if (img.width < 200 || img.height < 200) {
+                alert('❌ Imagem muito pequena. Dimensão mínima: 200x200 pixels.\nDimensão atual: ' + img.width + 'x' + img.height);
+                inputEl.value = '';
+                previewEl.innerHTML = '';
+                return;
+              }
+              // Se passou em todas validações, mostrar preview
+              showFilePreview(file, previewEl);
+            };
+            img.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        } else {
+          // PDF: apenas mostrar preview
+          showFilePreview(file, previewEl);
+        }
+      }
+
+      if (cemigInput) cemigInput.addEventListener('change', function () { validateAndPreview(cemigInput, cemigPreview); });
+      if (copasaInput) copasaInput.addEventListener('change', function () { validateAndPreview(copasaInput, copasaPreview); });
+
+      // Date mask: DD/MM/YYYY
+      function maskDateInput(e) {
+        var el = e.target;
+        var v = el.value.replace(/\D/g, '').slice(0, 8);
+        if (v.length >= 2) {
+          var day = v.slice(0, 2);
+          var rest = v.slice(2);
+          if (rest.length >= 2) {
+            var month = rest.slice(0, 2);
+            var year = rest.slice(2);
+            el.value = day + '/' + month + (year ? '/' + year : '');
+          } else {
+            el.value = day + '/' + rest;
+          }
+        } else {
+          el.value = v;
+        }
+      }
+
+      var dateInputs = document.querySelectorAll('input.date');
+      dateInputs.forEach(function (d) { d.addEventListener('input', maskDateInput); });
+
+      // === Cálculo da comissão da imobiliária (% 1º mês) ===
+      var percImobInput = document.querySelector('input[name="perc_imobiliaria"]');
+      var percImobLabel = percImobInput ? percImobInput.closest('label') : null;
+
+      function updateValorImobiliaria() {
+        if (!valorAluguelInput || !percImobInput) return;
+        var aluguelVal = parseBRL(valorAluguelInput.value);
+        var perc = parseFloat(percImobInput.value) || 0;
+        
+        // Remove container anterior se existir
+        var oldContainer = document.querySelector('#calculo-imobiliaria-container');
+        if (oldContainer) oldContainer.remove();
+        
+        if (!isFinite(aluguelVal) || aluguelVal <= 0) {
+          return;
+        }
+        
+        // Criar novo container para exibição do cálculo
+        var container = document.createElement('div');
+        container.id = 'calculo-imobiliaria-container';
+        container.className = 'full';
+        container.style.display = 'block';
+        
+        var label = document.createElement('label');
+        label.innerHTML = '<span>Valor Imobiliária (Calculado)</span><input type="text" name="valor_imobiliaria" disabled placeholder="R$ 0,00" class="currency">';
+        
+        container.appendChild(label);
+        
+        // Inserir após o campo de percentual
+        if (percImobLabel) {
+          percImobLabel.parentNode.insertBefore(container, percImobLabel.nextSibling);
+        }
+        
+        // Calcular e atualizar valor
+        var resultado = aluguelVal * (perc / 100);
+        var outputInput = container.querySelector('input[name="valor_imobiliaria"]');
+        try {
+          outputInput.value = resultado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        } catch (err) {
+          outputInput.value = 'R$ ' + resultado.toFixed(2);
+        }
+      }
+
+      if (valorAluguelInput) valorAluguelInput.addEventListener('input', updateValorImobiliaria);
+      if (percImobInput) {
+        percImobInput.addEventListener('change', updateValorImobiliaria);
+        percImobInput.addEventListener('input', updateValorImobiliaria);
+      }
+
+      // === SALVAMENTO EM LOCALSTORAGE ===
+      var STORAGE_KEY = 'ficha_captacao_rascunho';
+      var AUTO_SAVE_INTERVAL = 30000; // 30 segundos
+      var recuperarBtn = document.getElementById('recuperar-rascunho');
+      
+      // Auto-salvar formulário a cada 30s
+      setInterval(function () {
+        var formData = new FormData(form);
+        var dados = {};
+        for (var pair of formData.entries()) {
+          if (!(pair[1] instanceof File)) {
+            dados[pair[0]] = pair[1];
+          }
+        }
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+          console.log('💾 Rascunho salvo em ' + new Date().toLocaleTimeString('pt-BR'));
+        } catch (e) {
+          console.error('Erro ao salvar localStorage:', e);
+        }
+      }, AUTO_SAVE_INTERVAL);
+
+      // Verificar se há rascunho salvo ao carregar
+      window.addEventListener('load', function () {
+        var rascunho = localStorage.getItem(STORAGE_KEY);
+        if (rascunho) {
+          recuperarBtn.style.display = 'block';
+          recuperarBtn.addEventListener('click', function () {
+            try {
+              var dados = JSON.parse(rascunho);
+              for (var key in dados) {
+                var input = form.querySelector('[name="' + key + '"]');
+                if (input) {
+                  input.value = dados[key];
+                  // Dispara evento change para atualizar UI
+                  input.dispatchEvent(new Event('change', { bubbles: true }));
+                  input.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+              }
+              alert('✅ Rascunho recuperado com sucesso!');
+            } catch (e) {
+              alert('❌ Erro ao recuperar rascunho');
+            }
+          });
+        }
+      });
+
+      // Limpar localStorage quando formulário é submetido com sucesso
+      function limparRascunho() {
+        localStorage.removeItem(STORAGE_KEY);
+        recuperarBtn.style.display = 'none';
+        console.log('🗑️ Rascunho deletado');
+      }
+
+      // === CONFIRMAÇÃO ANTES DE SUBMETER ===
+      function gerarResumoFormulario() {
+        var formData = new FormData(form);
+        var resumo = '📋 RESUMO DA FICHA DE CAPTAÇÃO\n\n';
+        resumo += '═══════════════════════════════════════\n';
+        resumo += 'I. PROPRIETÁRIO\n';
+        resumo += '───────────────────────────────────────\n';
+        
+        var owner = formData.get('owner_name');
+        var cpf = formData.get('owner_cpf_cnpj');
+        var phone = formData.get('owner_phone');
+        var email = formData.get('email1');
+        
+        resumo += 'Nome: ' + (owner || '[não preenchido]') + '\n';
+        resumo += 'CPF/CNPJ: ' + (cpf || '[não preenchido]') + '\n';
+        resumo += 'Telefone: ' + (phone || '[não preenchido]') + '\n';
+        resumo += 'Email: ' + (email || '[não preenchido]') + '\n';
+        
+        resumo += '\n═══════════════════════════════════════\n';
+        resumo += 'III. IMÓVEL\n';
+        resumo += '───────────────────────────────────────\n';
+        
+        var propAddr = formData.get('prop_address');
+        var finalidade = [];
+        if (formData.get('finalidade_venda')) finalidade.push('Venda');
+        if (formData.get('finalidade_locacao')) finalidade.push('Locação');
+        
+        resumo += 'Endereço: ' + (propAddr || '[não preenchido]') + '\n';
+        resumo += 'Finalidade: ' + (finalidade.length > 0 ? finalidade.join(', ') : '[não selecionado]') + '\n';
+        
+        if (formData.get('finalidade_venda')) {
+          resumo += 'Valor: ' + (formData.get('valor_imovel') || '[não preenchido]') + '\n';
+          resumo += 'Comissão 6%: ' + (formData.get('comissao_venda') || '[não calculado]') + '\n';
+        }
+        
+        if (formData.get('finalidade_locacao')) {
+          resumo += 'Valor Aluguel: ' + (formData.get('valor_aluguel') || '[não preenchido]') + '\n';
+          resumo += 'Comissão %: ' + (formData.get('perc_imobiliaria') || '50') + '%\n';
+        }
+        
+        resumo += '\n═══════════════════════════════════════\n';
+        resumo += '✅ Confirmar envio desta ficha?\n';
+        
+        return resumo;
+      }
+
+      // Optional: intercept submit to demonstrate FormData usage (no backend configured)
+      function validateCPF(cpf) {
+        cpf = cpf.replace(/\D/g, '');
+        if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+        var sum = 0, remainder;
+        for (var i = 1; i <= 9; i++) sum += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+        remainder = (sum * 10) % 11;
+        if (remainder === 10 || remainder === 11) remainder = 0;
+        if (remainder !== parseInt(cpf.substring(9, 10))) return false;
+        sum = 0;
+        for (var i = 1; i <= 10; i++) sum += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+        remainder = (sum * 10) % 11;
+        if (remainder === 10 || remainder === 11) remainder = 0;
+        if (remainder !== parseInt(cpf.substring(10, 11))) return false;
+        return true;
+      }
+
+      function validateCNPJ(cnpj) {
+        cnpj = cnpj.replace(/\D/g, '');
+        if (cnpj.length !== 14 || /^(\d)\1{13}$/.test(cnpj)) return false;
+        var size = cnpj.length - 2;
+        var numbers = cnpj.substring(0, size);
+        var digits = cnpj.substring(size);
+        var sum = 0, pos = 0;
+        for (var i = size - 1; i >= 0; i--) {
+          pos++;
+          sum += numbers.charAt(size - pos) * Math.pow(2, (pos % 8) + 2);
+        }
+        var result = sum % 11 < 2 ? 0 : 11 - sum % 11;
+        if (result !== parseInt(digits.charAt(0))) return false;
+        size = size + 1;
+        numbers = cnpj.substring(0, size);
+        sum = 0;
+        pos = 0;
+        for (var i = size - 1; i >= 0; i--) {
+          pos++;
+          sum += numbers.charAt(size - pos) * Math.pow(2, (pos % 8) + 2);
+        }
+        result = sum % 11 < 2 ? 0 : 11 - sum % 11;
+        if (result !== parseInt(digits.charAt(1))) return false;
+        return true;
+      }
+
+      function validateEmail(email) {
+        var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+      }
+
+      function validateDateDDMMYYYY(date) {
+        if (!date || date.length !== 10) return false;
+        var parts = date.split('/');
+        if (parts.length !== 3) return false;
+        var d = parseInt(parts[0]), m = parseInt(parts[1]), y = parseInt(parts[2]);
+        if (d < 1 || d > 31 || m < 1 || m > 12) return false;
+        return true;
+      }
+
+      function validateForm() {
+        var errors = [];
+        
+        // Validar proprietário (nome obrigatório)
+        var ownerName = document.querySelector('input[name="owner_name"]');
+        if (!ownerName.value.trim()) {
+          errors.push('Proprietário: Nome é obrigatório');
+          ownerName.style.borderColor = '#dc3545';
+        } else {
+          ownerName.style.borderColor = '';
+        }
+
+        // Validar CPF/CNPJ (se preenchido)
+        var cpfCnpj = document.querySelector('input[name="owner_cpf_cnpj"]');
+        if (cpfCnpj.value.trim()) {
+          var clean = cpfCnpj.value.replace(/\D/g, '');
+          var isValid = (clean.length === 11 ? validateCPF(cpfCnpj.value) : validateCNPJ(cpfCnpj.value));
+          if (!isValid) {
+            errors.push('CPF/CNPJ inválido');
+            cpfCnpj.style.borderColor = '#dc3545';
+          } else {
+            cpfCnpj.style.borderColor = '';
+          }
+        } else {
+          cpfCnpj.style.borderColor = '';
+        }
+
+        // Validar emails (se preenchidos)
+        var email1 = document.querySelector('input[name="email1"]');
+        if (email1.value.trim() && !validateEmail(email1.value)) {
+          errors.push('Email 1 inválido');
+          email1.style.borderColor = '#dc3545';
+        } else {
+          email1.style.borderColor = '';
+        }
+
+        var email2 = document.querySelector('input[name="email2"]');
+        if (email2.value.trim() && !validateEmail(email2.value)) {
+          errors.push('Email 2 inválido');
+          email2.style.borderColor = '#dc3545';
+        } else {
+          email2.style.borderColor = '';
+        }
+
+        // Validar data de nascimento (se preenchida)
+        var ownerBirth = document.querySelector('input[name="owner_birth"]');
+        if (ownerBirth.value.trim() && !validateDateDDMMYYYY(ownerBirth.value)) {
+          errors.push('Data de nascimento (proprietário) inválida. Use DD/MM/YYYY');
+          ownerBirth.style.borderColor = '#dc3545';
+        } else {
+          ownerBirth.style.borderColor = '';
+        }
+
+        // Validar endereço do imóvel
+        var propAddress = document.querySelector('input[name="prop_address"]');
+        if (!propAddress.value.trim()) {
+          errors.push('Endereço do imóvel é obrigatório');
+          propAddress.style.borderColor = '#dc3545';
+        } else {
+          propAddress.style.borderColor = '';
+        }
+
+        // Validar valor do imóvel se Venda está selecionada
+        if (vendaCheckbox && vendaCheckbox.checked) {
+          if (!valorImovelInput.value.trim()) {
+            errors.push('Valor do imóvel é obrigatório para Venda');
+            valorImovelInput.style.borderColor = '#dc3545';
+          } else {
+            valorImovelInput.style.borderColor = '';
+          }
+        }
+
+        // Validar valor do aluguel se Locação está selecionada
+        if (locacaoCheckbox && locacaoCheckbox.checked) {
+          if (!valorAluguelInput.value.trim()) {
+            errors.push('Valor do aluguel é obrigatório para Locação');
+            valorAluguelInput.style.borderColor = '#dc3545';
+          } else {
+            valorAluguelInput.style.borderColor = '';
+          }
+        }
+
+        // Validar CEP se preenchido
+        var propCep = document.querySelector('input[name="prop_cep"]');
+        if (propCep.value.trim()) {
+          var cepClean = propCep.value.replace(/\D/g, '');
+          if (cepClean.length !== 8) {
+            errors.push('CEP deve ter 8 dígitos');
+            propCep.style.borderColor = '#dc3545';
+          } else {
+            propCep.style.borderColor = '';
+          }
+        } else {
+          propCep.style.borderColor = '';
+        }
+
+        return errors;
+      }
+
+      // Optional: intercept submit to demonstrate FormData usage (no backend configured)
+      var form = document.getElementById('ficha');
+      if (form) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          
+          // Validar formulário
+          var errors = validateForm();
+          if (errors.length > 0) {
+            alert('❌ Erros encontrados:\n\n' + errors.join('\n'));
+            return;
+          }
+          
+          // Mostrar resumo e pedir confirmação
+          var resumo = gerarResumoFormulario();
+          if (!confirm(resumo)) {
+            console.log('Submissão cancelada pelo usuário');
+            return;
+          }
+          
+          var fd = new FormData(form);
+          var submitBtn = form.querySelector('button[type="submit"]');
+          var originalText = submitBtn.textContent;
+          submitBtn.disabled = true;
+          submitBtn.textContent = '⏳ Salvando...';
+          
+          // Enviar via AJAX
+          fetch('/api/save-ficha', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              ...Object.fromEntries(fd.entries())
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.sucesso) {
+              alert('✅ Ficha salva com sucesso!\n\nID: ' + data.id_ficha + '\nData: ' + data.data_hora + '\nArquivos salvos: ' + data.arquivos_salvos);
+              console.log('Resposta do servidor:', data);
+              // Limpar formulário e rascunho
+              form.reset();
+              limparRascunho();
+            } else {
+              alert('❌ Erro ao salvar:\n' + data.erro);
+              console.error('Erro:', data);
+            }
+          })
+          .catch(error => {
+            alert('❌ Erro de conexão:\n' + error.message);
+            console.error('Erro de rede:', error);
+          })
+          .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+          });
+        });
+      }
+    });
+  </script>
+</body>
