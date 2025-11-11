@@ -837,7 +837,7 @@
           submitBtn.textContent = '⏳ Salvando...';
           
           // Enviar via AJAX
-          fetch('/api/save-ficha', {
+          fetch('/.netlify/functions/save-ficha', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
