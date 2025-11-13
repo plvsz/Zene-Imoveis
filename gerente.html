@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Gerente - Ficha de Captação</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { background: #f5f5f5; }
+    .gerente-container { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+    
+    .gerente-header {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .gerente-header h1 { margin: 0; color: #333; }
+    .gerente-header .user-info { color: #666; font-size: 0.95em; }
+    
+    .gerente-actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .btn-voltar {
+      padding: 10px 20px;
+      background: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .btn-voltar:hover { background: #5a6268; }
+    
+    .btn-sair {
+      padding: 10px 20px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .btn-sair:hover { background: #c82333; }
+    
+    .fichas-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+    
+    .ficha-card {
+      background: #fff;
+      border-left: 4px solid #ff9800;
+      border-radius: 4px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    
+    .ficha-card:hover {
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      transform: translateY(-2px);
+    }
+    
+    .ficha-card h3 { margin: 0 0 12px 0; color: #333; }
+    .ficha-card p { margin: 6px 0; font-size: 0.9em; color: #666; }
+    .ficha-card .criador { font-size: 0.85em; color: #999; margin-top: 8px; }
+    
+    .ficha-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .btn-edit {
+      flex: 1;
+      padding: 8px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .btn-edit:hover { background: #218838; }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+      background: #fff;
+      border-radius: 4px;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    
+    .modal.active { display: flex; align-items: center; justify-content: center; }
+    
+    .modal-content {
+      background: #fff;
+      padding: 32px;
+      max-width: 800px;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      max-height: 90vh;
+      overflow-y: auto;
+      width: 90%;
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .modal-header h2 { margin: 0; }
+    .modal-close {
+      font-size: 2em;
+      cursor: pointer;
+      color: #999;
+    }
+    
+    .modal-close:hover { color: #333; }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.95em;
+      box-sizing: border-box;
+    }
+    
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    
+    .form-section {
+      margin-bottom: 24px;
+    }
+    
+    .form-section h3 {
+      background: #f0f0f0;
+      padding: 12px;
+      border-left: 4px solid #ff9800;
+      margin: 0 0 16px 0;
+      font-size: 1em;
+    }
+    
+    .section-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid #eee;
+    }
+    
+    .btn-save {
+      flex: 1;
+      padding: 12px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .btn-save:hover { background: #218838; }
+    
+    .btn-cancel {
+      flex: 1;
+      padding: 12px;
+      background: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .btn-cancel:hover { background: #5a6268; }
+  </style>
+</head>
+<body>
+  <div class="gerente-container">
+    <div class="gerente-header">
+      <div>
+        <h1>📊 Painel de Gerente de Locação</h1>
+        <p class="user-info">Visualize e edite as fichas de captação</p>
+      </div>
+      <div class="gerente-actions">
+        <a href="index.html" class="btn-voltar">← Voltar</a>
+        <button onclick="fazerLogout()" class="btn-sair">🚪 Sair</button>
+      </div>
+    </div>
+
+    <div id="fichasContainer" class="fichas-container">
+      <div class="empty-state">Carregando fichas...</div>
+    </div>
+  </div>
+
+  <!-- Modal Edição de Ficha -->
+  <div class="modal" id="modalEdicao">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Editar Ficha: <span id="fichaName"></span></h2>
+        <span class="modal-close" onclick="fecharModal()">&times;</span>
+      </div>
+      <div id="formEdicao"></div>
+      <div class="modal-actions">
+        <button class="btn-save" onclick="salvarAlteracoes()">💾 Salvar</button>
+        <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let usuarioLogado = null;
+    let fichasData = [];
+    let fichaEditando = null;
+
+    // Verificar login
+    window.addEventListener('load', function() {
+      const usuarioLogado_sessao = sessionStorage.getItem('usuarioLogado');
+      if (!usuarioLogado_sessao) {
+        alert('❌ Você precisa fazer login para acessar.');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      usuarioLogado = JSON.parse(usuarioLogado_sessao);
+      
+      // Apenas gerente de locação pode acessar
+      if (usuarioLogado.role !== 'gerente_locacao') {
+        alert('❌ Acesso negado. Apenas gerentes de locação podem acessar este painel.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      carregarFichas();
+    });
+
+    function carregarFichas() {
+      fichasData = JSON.parse(localStorage.getItem('fichas_salvas') || '[]');
+      const container = document.getElementById('fichasContainer');
+
+      if (fichasData.length === 0) {
+        container.innerHTML = '<div class="empty-state">Nenhuma ficha salva ainda.</div>';
+        return;
+      }
+
+      container.innerHTML = fichasData.map((ficha, idx) => `
+        <div class="ficha-card">
+          <h3>${ficha.nomeFicha || 'Sem nome'}</h3>
+          <p><strong>ID:</strong> ${ficha.id || 'N/A'}</p>
+          <p><strong>Proprietário:</strong> ${ficha.owner_name || 'N/A'}</p>
+          <p><strong>Endereço:</strong> ${ficha.prop_address || 'N/A'}</p>
+          <p><strong>Data:</strong> ${ficha._data_hora || 'N/A'}</p>
+          <p class="criador">👤 Criado por: ${ficha._criador || 'desconhecido'}</p>
+          <div class="ficha-actions">
+            <button class="btn-edit" onclick="abrirEdicao(${idx})">✏️ Editar</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function abrirEdicao(idx) {
+      fichaEditando = idx;
+      const ficha = fichasData[idx];
+      
+      document.getElementById('fichaName').textContent = ficha.nomeFicha;
+      
+      // Definir os campos do formulário
+      const campos = {
+        'nomeFicha': 'Nome da Ficha',
+        'owner_name': 'Proprietário',
+        'spouse_name': 'Cônjuge',
+        'owner_cpf_cnpj': 'CPF/CNPJ (Proprietário)',
+        'spouse_cpf_cnpj': 'CPF/CNPJ (Cônjuge)',
+        'owner_phone': 'Telefone (Proprietário)',
+        'spouse_phone': 'Telefone (Cônjuge)',
+        'email1': 'E-mail 1',
+        'email2': 'E-mail 2',
+        'prop_address': 'Endereço do Imóvel',
+        'prop_neighborhood': 'Bairro',
+        'prop_city': 'Cidade',
+        'prop_type': 'Tipo de Imóvel',
+        'prop_area': 'Área (m²)',
+        'prop_rooms': 'Quartos',
+        'prop_bathrooms': 'Banheiros',
+        'prop_price': 'Valor do Imóvel',
+        'prop_rent': 'Valor do Aluguel',
+        'observations': 'Observações'
+      };
+
+      let html = '';
+      for (const [campo, label] of Object.entries(campos)) {
+        const valor = ficha[campo] || '';
+        if (campo === 'observations') {
+          html += `
+            <div class="form-group">
+              <label for="${campo}">${label}</label>
+              <textarea id="${campo}" placeholder="${label}">${valor}</textarea>
+            </div>
+          `;
+        } else {
+          html += `
+            <div class="form-group">
+              <label for="${campo}">${label}</label>
+              <input type="text" id="${campo}" placeholder="${label}" value="${valor}">
+            </div>
+          `;
+        }
+      }
+
+      document.getElementById('formEdicao').innerHTML = html;
+      document.getElementById('modalEdicao').classList.add('active');
+    }
+
+    function salvarAlteracoes() {
+      const campos = {
+        'nomeFicha': null,
+        'owner_name': null,
+        'spouse_name': null,
+        'owner_cpf_cnpj': null,
+        'spouse_cpf_cnpj': null,
+        'owner_phone': null,
+        'spouse_phone': null,
+        'email1': null,
+        'email2': null,
+        'prop_address': null,
+        'prop_neighborhood': null,
+        'prop_city': null,
+        'prop_type': null,
+        'prop_area': null,
+        'prop_rooms': null,
+        'prop_bathrooms': null,
+        'prop_price': null,
+        'prop_rent': null,
+        'observations': null
+      };
+
+      for (const campo of Object.keys(campos)) {
+        const elemento = document.getElementById(campo);
+        if (elemento) {
+          fichasData[fichaEditando][campo] = elemento.value;
+        }
+      }
+
+      // Atualizar a ficha no localStorage
+      localStorage.setItem('fichas_salvas', JSON.stringify(fichasData));
+      
+      alert('✅ Ficha atualizada com sucesso!');
+      fecharModal();
+      carregarFichas();
+    }
+
+    function fecharModal() {
+      document.getElementById('modalEdicao').classList.remove('active');
+      fichaEditando = null;
+    }
+
+    function fazerLogout() {
+      if (confirm('Deseja sair do sistema?')) {
+        sessionStorage.removeItem('usuarioLogado');
+        window.location.href = 'login.html';
+      }
+    }
+  </script>
+</body>
+</html>
