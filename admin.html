@@ -534,6 +534,8 @@
     }
 
     function abrirModalNovoUsuario() {
+      // Recarregar dados antes de abrir o modal
+      usuariosData = JSON.parse(localStorage.getItem('usuarios') || '[]');
       usuarioEditando = null;
       document.getElementById('modalUsuarioTitle').textContent = 'Novo Usuário';
       document.getElementById('novoUsername').value = '';
@@ -557,6 +559,9 @@
       const password = document.getElementById('novoPassword').value.trim();
       const role = document.getElementById('novoRole').value;
 
+      console.log('Tentando salvar usuário:', { username, password, role });
+      console.log('usuariosData atual:', usuariosData);
+
       if (!username || !password) {
         alert('❌ Usuário e senha são obrigatórios');
         return;
@@ -573,28 +578,36 @@
       }
 
       if (usuarioEditando === null) {
+        // Recarregar dados antes de verificar duplicatas
+        const usuariosAtuais = JSON.parse(localStorage.getItem('usuarios') || '[]');
+        console.log('Usuários atuais no localStorage:', usuariosAtuais);
+        
         // Verificar se usuário já existe (case-insensitive)
-        if (usuariosData.find(u => u.username.toLowerCase() === username.toLowerCase())) {
+        if (usuariosAtuais.find(u => u.username.toLowerCase() === username.toLowerCase())) {
           alert('❌ Este usuário já existe');
           return;
         }
-        usuariosData.push({
+        usuariosAtuais.push({
           id: Date.now(),
           username: username,
           password: password,
           role: role,
           dataCriacao: new Date().toLocaleString('pt-BR')
         });
+        localStorage.setItem('usuarios', JSON.stringify(usuariosAtuais));
+        usuariosData = usuariosAtuais;
+        console.log('Usuário criado com sucesso! Novo usuariosData:', usuariosData);
         alert('✅ Usuário criado com sucesso!');
       } else {
         // Editar usuário existente
         usuariosData[usuarioEditando].username = username;
         usuariosData[usuarioEditando].password = password;
         usuariosData[usuarioEditando].role = role;
+        localStorage.setItem('usuarios', JSON.stringify(usuariosData));
+        console.log('Usuário atualizado com sucesso!');
         alert('✅ Usuário atualizado com sucesso!');
       }
 
-      localStorage.setItem('usuarios', JSON.stringify(usuariosData));
       fecharModal('usuario');
       carregarUsuarios();
     }
