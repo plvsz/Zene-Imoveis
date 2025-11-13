@@ -9,14 +9,26 @@
 </head>
 <body>
   <header class="site-header">
-    <h1>Zene Imóveis — Ficha de Captação</h1>
-    <p class="subtitle">Preencha os dados do proprietário e do imóvel</p>
+    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+      <div>
+        <h1>Zene Imóveis — Ficha de Captação</h1>
+        <p class="subtitle">Preencha os dados do proprietário e do imóvel</p>
+      </div>
+      <a href="admin.html" style="padding: 8px 16px; background: #007bff; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold;">⚙️ Admin</a>
+    </div>
   </header>
 
   <main class="container">
     <form id="ficha" class="form" enctype="multipart/form-data" autocomplete="off">
       <fieldset>
-        <legend>I. Proprietário / Cônjuge</legend>
+          <legend>Identificação da Ficha</legend>
+          <div class="field full">
+            <label for="nomeFicha">Nome da ficha <span style="color:#dc3545">*</span></label>
+            <input type="text" id="nomeFicha" name="nomeFicha" required maxlength="60" placeholder="Ex: Ficha Casa do Pedro">
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>I. Proprietário / Cônjuge</legend>
         <div class="grid">
           <label><span>Proprietário / Razão Social</span><input name="owner_name" type="text" placeholder="Nome ou razão social" /></label>
           <label><span>Conjuge / Razão Social (se aplicável)</span><input name="spouse_name" type="text" placeholder="Nome do cônjuge / razão social" /></label>
@@ -612,6 +624,9 @@
       function gerarResumoFormulario() {
         var formData = new FormData(form);
         var resumo = '📋 RESUMO DA FICHA DE CAPTAÇÃO\n\n';
+        // Incluir nome da ficha no resumo
+        var nomeFichaResumo = formData.get('nomeFicha') || '[sem nome]';
+        resumo += 'Ficha: ' + nomeFichaResumo + '\n\n';
         resumo += '═══════════════════════════════════════\n';
         resumo += 'I. PROPRIETÁRIO\n';
         resumo += '───────────────────────────────────────\n';
@@ -849,7 +864,18 @@
           .then(response => response.json())
           .then(data => {
             if (data.sucesso) {
-              alert('✅ Ficha salva com sucesso!\n\nID: ' + data.id_ficha + '\nData: ' + data.data_hora + '\nArquivos salvos: ' + data.arquivos_salvos);
+              // Salvar ficha retornada no localStorage para visualização local (view.html usa este armazenamento)
+              try {
+                var saved = JSON.parse(localStorage.getItem('fichas_salvas') || '[]');
+                // garantir que dados retornados estejam no formato esperado
+                if (data.dados) {
+                  saved.push(data.dados);
+                  localStorage.setItem('fichas_salvas', JSON.stringify(saved));
+                }
+              } catch (e) {
+                console.error('Erro ao salvar ficha no localStorage:', e);
+              }
+              alert('✅ Ficha salva com sucesso!\n\nID: ' + data.id_ficha + '\nNome: ' + (data.dados && data.dados.nomeFicha ? data.dados.nomeFicha : '[não informado]') + '\nData: ' + data.data_hora + '\nArquivos salvos: ' + (data.arquivos_salvos || '[nenhum]'));
               console.log('Resposta do servidor:', data);
               // Limpar formulário e rascunho
               form.reset();

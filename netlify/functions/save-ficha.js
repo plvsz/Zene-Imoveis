@@ -12,11 +12,21 @@ exports.handler = async (event, context) => {
     const data = JSON.parse(event.body);
     const dataHora = new Date().toLocaleString('pt-BR');
     const timestamp = Date.now();
-    const id_ficha = `ficha_${timestamp}.json`;
+    // Sanitizar nome da ficha para id (sem espaços, sem acentos, sem caracteres especiais)
+    let nomeFicha = (data.nomeFicha || "").toString().trim();
+    nomeFicha = nomeFicha
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove acentos
+      .replace(/[^a-zA-Z0-9 ]/g, '') // remove caracteres especiais
+      .replace(/\s+/g, '-') // troca espaços por hífen
+      .substring(0, 40); // limita tamanho
+  // Gerar código super curto: 4 caracteres alfanuméricos
+  const shortCode = Math.random().toString(36).substring(2, 6).toUpperCase();
+  const id_ficha = `ficha_${nomeFicha}_${shortCode}.json`;
 
     // Preparar dados
     const fichaCompleta = {
       id: id_ficha,
+      nomeFicha: data.nomeFicha,
       _data_hora: dataHora,
       _timestamp: timestamp,
       ...data

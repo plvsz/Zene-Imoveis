@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Ficha de Captação - Visualização Privada</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8f9fa; margin: 0; }
+    .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #0001; padding: 32px; }
+    h1 { font-size: 1.5em; margin-bottom: 16px; }
+    .field { margin-bottom: 12px; }
+    .label { font-weight: bold; }
+    .value { margin-left: 8px; }
+    .hidden { display: none; }
+    .error { color: #dc3545; margin-bottom: 16px; }
+    .login { margin-bottom: 24px; }
+    input[type=password] { padding: 6px; font-size: 1em; }
+    button { padding: 6px 16px; font-size: 1em; background: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+    button:disabled { background: #aaa; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Ficha de Captação</h1>
+    <div class="login" id="loginBox">
+      <div class="field">
+        <label for="senha">Senha de acesso:</label>
+        <input type="password" id="senha" autocomplete="off">
+        <button id="entrar">Entrar</button>
+      </div>
+      <div class="error hidden" id="erroSenha">Senha incorreta.</div>
+    </div>
+    <div id="fichaBox" class="hidden">
+      <div id="fichaContent">Carregando...</div>
+    </div>
+  </div>
+  <script>
+    // Configuração
+    const SENHA_CORRETA = "zene2025";
+    const fichaId = new URLSearchParams(window.location.search).get("id");
+    const loginBox = document.getElementById("loginBox");
+    const fichaBox = document.getElementById("fichaBox");
+    const erroSenha = document.getElementById("erroSenha");
+    const fichaContent = document.getElementById("fichaContent");
+    document.getElementById("entrar").onclick = function() {
+      const senha = document.getElementById("senha").value;
+      if (senha === SENHA_CORRETA) {
+        loginBox.classList.add("hidden");
+        fichaBox.classList.remove("hidden");
+        carregarFicha();
+      } else {
+        erroSenha.classList.remove("hidden");
+      }
+    };
+    function carregarFicha() {
+      if (!fichaId) {
+        fichaContent.innerHTML = '<span class="error">ID da ficha não informado.</span>';
+        return;
+      }
+      // Mock: busca localStorage (substitua por API depois)
+      const fichas = JSON.parse(localStorage.getItem("fichas_salvas") || "[]");
+      const ficha = fichas.find(f => f.id === fichaId);
+      if (!ficha) {
+        fichaContent.innerHTML = '<span class="error">Ficha não encontrada.</span>';
+        return;
+      }
+      fichaContent.innerHTML = Object.entries(ficha).map(([k,v]) => `<div class="field"><span class="label">${k}:</span> <span class="value">${v}</span></div>`).join("");
+    }
+  </script>
+</body>
+</html>
