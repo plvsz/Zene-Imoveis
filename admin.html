@@ -138,6 +138,26 @@
     
     .add-button { background: #28a745; color: #fff; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1em; margin-bottom: 16px; }
     .add-button:hover { background: #218838; }
+    
+    .btn-historico { background: #17a2b8; color: #fff; }
+    .btn-historico:hover { background: #138496; }
+    
+    .historico-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .historico-item {
+      background: #f8f9fa;
+      border-left: 4px solid #17a2b8;
+      padding: 12px;
+      border-radius: 4px;
+    }
+    .historico-item .timestamp { font-weight: bold; color: #333; font-size: 0.95em; }
+    .historico-item .usuario { color: #666; font-size: 0.9em; }
+    .historico-item .alteracao { color: #333; margin-top: 6px; font-size: 0.9em; }
+    .historico-item .antes { color: #999; }
+    .historico-item .depois { color: #28a745; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -238,6 +258,19 @@
     </div>
   </div>
 
+  <!-- Modal Histórico -->
+  <div class="modal" id="modalHistorico">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📜 Histórico de Alterações: <span id="fichaNameHistorico"></span></h2>
+        <span class="modal-close" onclick="fecharModal('historico')">&times;</span>
+      </div>
+      <div id="historicoContent" class="historico-list">
+        <div class="empty-state">Sem alterações registradas.</div>
+      </div>
+    </div>
+  </div>
+
   <script>
     let usuarioLogado = null;
     let fichasData = [];
@@ -327,6 +360,7 @@
             <div class="actions">
               <button class="btn-edit ${!podeEditar ? 'btn-disabled' : ''}" onclick="abrirEdicao(${idxOriginal})" ${!podeEditar ? 'disabled' : ''}>✏️ Editar</button>
               <button class="btn-delete ${!podeDeletar ? 'btn-disabled' : ''}" onclick="deletarFicha(${idxOriginal})" ${!podeDeletar ? 'disabled' : ''}>🗑️ Deletar</button>
+              <button class="btn-historico" onclick="abrirHistorico(${idxOriginal})">📜 Histórico</button>
             </div>
           </div>
         `;
@@ -400,9 +434,26 @@
       const ficha = fichasData[fichaEditando];
       const inputs = document.querySelectorAll('#formEdicao input, #formEdicao textarea');
 
+      // Registrar histórico de alterações
+      if (!ficha._historico) ficha._historico = [];
+
       inputs.forEach(input => {
         const key = input.getAttribute('data-key');
-        ficha[key] = input.value;
+        const valorNovo = input.value;
+        const valorAnterior = ficha[key] || '';
+
+        // Se o valor mudou, registrar no histórico
+        if (valorAnterior !== valorNovo) {
+          ficha._historico.push({
+            timestamp: new Date().toLocaleString('pt-BR'),
+            usuario: usuarioLogado.username,
+            campo: key,
+            valorAnterior: valorAnterior,
+            valorNovo: valorNovo
+          });
+        }
+
+        ficha[key] = valorNovo;
       });
 
       localStorage.setItem('fichas_salvas', JSON.stringify(fichasData));
@@ -486,6 +537,34 @@
       }
     }
 
+    function abrirHistorico(idx) {
+      if (fichasData[idx] === undefined) return;
+      const ficha = fichasData[idx];
+      
+      document.getElementById('fichaNameHistorico').textContent = ficha.nomeFicha || 'Sem nome';
+      
+      const historico = ficha._historico || [];
+      const container = document.getElementById('historicoContent');
+      
+      if (historico.length === 0) {
+        container.innerHTML = '<div class="empty-state">Sem alterações registradas.</div>';
+      } else {
+        container.innerHTML = historico.map((item, i) => `
+          <div class="historico-item">
+            <div class="timestamp">📅 ${item.timestamp}</div>
+            <div class="usuario">👤 Editado por: <strong>${item.usuario}</strong></div>
+            <div class="alteracao">
+              <strong>Campo:</strong> ${item.campo}<br>
+              <span class="antes">Antes: "${item.valorAnterior || '[vazio]'}"</span><br>
+              <span class="depois">Depois: "${item.valorNovo || '[vazio]'}"</span>
+            </div>
+          </div>
+        `).join('');
+      }
+      
+      document.getElementById('modalHistorico').classList.add('active');
+    }
+
     function mudarTab(tab) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -501,6 +580,8 @@
       } else if (tipo === 'usuario') {
         document.getElementById('modalUsuario').classList.remove('active');
         usuarioEditando = null;
+      } else if (tipo === 'historico') {
+        document.getElementById('modalHistorico').classList.remove('active');
       }
     }
 
@@ -529,6 +610,9 @@
     });
     document.getElementById('modalUsuario').addEventListener('click', function(e) {
       if (e.target === this) fecharModal('usuario');
+    });
+    document.getElementById('modalHistorico').addEventListener('click', function(e) {
+      if (e.target === this) fecharModal('historico');
     });
   </script>
 </body>
