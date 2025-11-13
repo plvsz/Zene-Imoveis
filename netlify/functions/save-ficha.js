@@ -32,9 +32,18 @@ exports.handler = async (event, context) => {
       ...data
     };
 
+    // Contar arquivos recebidos
+    let arquivos_salvos = 0;
+    if (data._arquivos) {
+      if (data._arquivos.cemig_file) arquivos_salvos++;
+      if (data._arquivos.copasa_file) arquivos_salvos++;
+      console.log('📎 Arquivos recebidos:', Object.keys(data._arquivos));
+    }
+
     // Log (para verificar no Netlify)
     console.log('✅ Ficha recebida:', id_ficha);
     console.log('📊 Dados:', fichaCompleta);
+    console.log('📎 Total de arquivos:', arquivos_salvos);
 
     // Retornar sucesso
     return {
@@ -48,7 +57,8 @@ exports.handler = async (event, context) => {
         mensagem: 'Ficha salva com sucesso!',
         id_ficha: id_ficha,
         data_hora: dataHora,
-        dados: fichaCompleta
+        dados: fichaCompleta,
+        arquivos_salvos: arquivos_salvos
       })
     };
 

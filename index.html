@@ -888,16 +888,62 @@
           submitBtn.disabled = true;
           submitBtn.textContent = '⏳ Salvando...';
           
-          // Enviar via AJAX
-          fetch('/.netlify/functions/save-ficha', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              _criador: sessionStorage.getItem('usuarioLogado') ? JSON.parse(sessionStorage.getItem('usuarioLogado')).username : 'anônimo',
-              ...Object.fromEntries(fd.entries())
-            })
+          // Converter arquivos para Base64
+          function converterArquivosParaBase64(fd) {
+            return new Promise((resolve, reject) => {
+              const entries = Object.fromEntries(fd.entries());
+              const arquivos = {};
+              let arquivosProcessados = 0;
+              
+              const cemigFile = document.getElementById('cemig-file');
+              const copasaFile = document.getElementById('copasa-file');
+              
+              const arquivosParaProcessar = [];
+              if (cemigFile && cemigFile.files[0]) {
+                arquivosParaProcessar.push({ input: cemigFile, campo: 'cemig_file' });
+              }
+              if (copasaFile && copasaFile.files[0]) {
+                arquivosParaProcessar.push({ input: copasaFile, campo: 'copasa_file' });
+              }
+              
+              if (arquivosParaProcessar.length === 0) {
+                resolve(entries);
+                return;
+              }
+              
+              arquivosParaProcessar.forEach(({ input, campo }) => {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                  arquivos[campo] = {
+                    nome: file.name,
+                    tipo: file.type,
+                    tamanho: file.size,
+                    dados: e.target.result // Base64
+                  };
+                  arquivosProcessados++;
+                  if (arquivosProcessados === arquivosParaProcessar.length) {
+                    resolve({ ...entries, _arquivos: arquivos });
+                  }
+                };
+                reader.readAsDataURL(file);
+              });
+            });
+          }
+          
+          // Converter e enviar
+          converterArquivosParaBase64(fd).then(dadosComArquivos => {
+            // Enviar via AJAX
+            return fetch('/.netlify/functions/save-ficha', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                _criador: sessionStorage.getItem('usuarioLogado') ? JSON.parse(sessionStorage.getItem('usuarioLogado')).username : 'anônimo',
+                ...dadosComArquivos
+              })
+            });
           })
           .then(response => response.json())
           .then(data => {
