@@ -279,13 +279,20 @@
     let usuarioEditando = null;
 
     function inicializarDados() {
-      usuariosData = JSON.parse(localStorage.getItem('usuarios') || '[]');
-      if (usuariosData.length === 0) {
+      // Garantir que os usuários padrão estejam no localStorage
+      const usuariosExistentes = JSON.parse(localStorage.getItem('usuarios') || '[]');
+      
+      if (usuariosExistentes.length === 0) {
         usuariosData = [
-          { id: 1, username: 'admin', password: 'admin', role: 'admin', dataCriacao: new Date().toLocaleString('pt-BR') }
+          { id: 1, username: 'admin', password: 'admin', role: 'admin', dataCriacao: new Date().toLocaleString('pt-BR') },
+          { id: 2, username: 'gerente1', password: 'gerente1', role: 'gerente_locacao', dataCriacao: new Date().toLocaleString('pt-BR') },
+          { id: 3, username: 'usuario1', password: 'usuario1', role: 'normal', dataCriacao: new Date().toLocaleString('pt-BR') }
         ];
         localStorage.setItem('usuarios', JSON.stringify(usuariosData));
+      } else {
+        usuariosData = usuariosExistentes;
       }
+      
       fichasData = JSON.parse(localStorage.getItem('fichas_salvas') || '[]');
     }
 
