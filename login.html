@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Ficha de Captação</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .login-container {
+      background: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+    .login-container h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 1.8em;
+    }
+    .login-container .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 0.9em;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: #333;
+      font-weight: bold;
+      font-size: 0.95em;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1em;
+      transition: all 0.3s;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    .form-group button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .form-group button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      display: none;
+      border-left: 4px solid #f5c6cb;
+    }
+    .info {
+      background: #d1ecf1;
+      color: #0c5460;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-size: 0.9em;
+      border-left: 4px solid #bee5eb;
+    }
+    .demo-users {
+      background: #e7f3ff;
+      padding: 12px;
+      border-radius: 6px;
+      margin-top: 16px;
+      font-size: 0.85em;
+      color: #0066cc;
+      border-left: 4px solid #0066cc;
+    }
+    .demo-users strong { display: block; margin-bottom: 6px; }
+    .demo-users .user { margin: 6px 0; font-family: monospace; }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h1>🔐 Ficha de Captação</h1>
+    <p class="subtitle">Sistema de Gerenciamento de Imóveis</p>
+    
+    <div class="error" id="erroLogin">
+      <strong>❌ Erro:</strong> <span id="erroMsg">Usuário ou senha incorretos</span>
+    </div>
+
+    <div class="info">
+      ℹ️ Digite suas credenciais para acessar o sistema
+    </div>
+
+    <form id="loginForm" onsubmit="fazerLogin(event)">
+      <div class="form-group">
+        <label for="username">Usuário:</label>
+        <input type="text" id="username" placeholder="seu usuário" autocomplete="off" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Senha:</label>
+        <input type="password" id="password" placeholder="sua senha" required>
+      </div>
+
+      <div class="form-group">
+        <button type="submit">Entrar</button>
+      </div>
+    </form>
+
+    <div class="demo-users">
+      <strong>📌 Usuários de Demonstração:</strong>
+      <div class="user">👑 admin / admin</div>
+      <div class="user">📊 gerente1 / gerente1</div>
+      <div class="user">👤 usuario1 / usuario1</div>
+    </div>
+  </div>
+
+  <script>
+    function inicializarDadosPadrao() {
+      const usuariosExistentes = JSON.parse(localStorage.getItem('usuarios') || '[]');
+      
+      // Se houver usuários, não sobrescrever
+      if (usuariosExistentes.length > 0) return;
+      
+      // Criar usuários de demonstração padrão
+      const usuariosPadrao = [
+        { id: 1, username: 'admin', password: 'admin', role: 'admin', dataCriacao: new Date().toLocaleString('pt-BR') },
+        { id: 2, username: 'gerente1', password: 'gerente1', role: 'gerente_locacao', dataCriacao: new Date().toLocaleString('pt-BR') },
+        { id: 3, username: 'usuario1', password: 'usuario1', role: 'normal', dataCriacao: new Date().toLocaleString('pt-BR') }
+      ];
+      
+      localStorage.setItem('usuarios', JSON.stringify(usuariosPadrao));
+    }
+
+    function fazerLogin(event) {
+      event.preventDefault();
+      
+      inicializarDadosPadrao();
+      
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const erroDiv = document.getElementById('erroLogin');
+      
+      const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+      const usuario = usuarios.find(u => u.username === username && u.password === password);
+      
+      if (usuario) {
+        sessionStorage.setItem('usuarioLogado', JSON.stringify(usuario));
+        // Redirecionar para formulário
+        window.location.href = 'index.html';
+      } else {
+        erroDiv.style.display = 'block';
+        document.getElementById('username').focus();
+      }
+    }
+
+    // Inicializar dados ao carregar a página
+    window.addEventListener('load', inicializarDadosPadrao);
+
+    // Enter para enviar formulário
+    document.getElementById('password').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+      }
+    });
+  </script>
+</body>
+</html>

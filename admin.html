@@ -399,22 +399,68 @@
       document.getElementById('fichaName').textContent = ficha.nomeFicha || 'Sem nome';
       
       const campos = [
-        { label: 'Nome da Ficha', key: 'nomeFicha', type: 'text' },
-        { label: 'Proprietário', key: 'owner_name', type: 'text' },
-        { label: 'CPF/CNPJ', key: 'owner_cpf_cnpj', type: 'text' },
-        { label: 'Telefone', key: 'owner_phone', type: 'text' },
-        { label: 'Email', key: 'email1', type: 'email' },
-        { label: 'Endereço (Imóvel)', key: 'prop_address', type: 'text', full: true },
-        { label: 'Bairro', key: 'prop_neighborhood', type: 'text' },
-        { label: 'Cidade', key: 'prop_city', type: 'text' },
-        { label: 'Valor Aluguel', key: 'valor_aluguel', type: 'text' },
-        { label: 'Descrição', key: 'descricao', type: 'textarea', full: true }
+        // Identificação
+        { label: '📝 Nome da Ficha', key: 'nomeFicha', type: 'text', section: 'Identificação' },
+        
+        // Proprietário
+        { label: 'Proprietário / Razão Social', key: 'owner_name', type: 'text', section: 'Proprietário' },
+        { label: 'Cônjuge / Razão Social', key: 'spouse_name', type: 'text' },
+        { label: 'CPF / CNPJ (Proprietário)', key: 'owner_cpf_cnpj', type: 'text' },
+        { label: 'CPF / CNPJ (Cônjuge)', key: 'spouse_cpf_cnpj', type: 'text' },
+        { label: 'Identidade (Proprietário)', key: 'owner_id', type: 'text' },
+        { label: 'Identidade (Cônjuge)', key: 'spouse_id', type: 'text' },
+        { label: 'Data Nascimento (Proprietário)', key: 'owner_birth', type: 'text' },
+        { label: 'Data Nascimento (Cônjuge)', key: 'spouse_birth', type: 'text' },
+        { label: 'Estado Civil (Proprietário)', key: 'owner_marital', type: 'text' },
+        { label: 'Estado Civil (Cônjuge)', key: 'spouse_marital', type: 'text' },
+        { label: 'Telefone (Proprietário)', key: 'owner_phone', type: 'text' },
+        { label: 'Telefone (Cônjuge)', key: 'spouse_phone', type: 'text' },
+        { label: 'Profissão (Proprietário)', key: 'owner_profession', type: 'text' },
+        { label: 'Profissão (Cônjuge)', key: 'spouse_profession', type: 'text' },
+        { label: 'Email 1', key: 'email1', type: 'email' },
+        { label: 'Email 2', key: 'email2', type: 'email' },
+        { label: 'Endereço Residencial', key: 'res_address', type: 'text', full: true },
+        { label: 'Bairro (Residencial)', key: 'res_neighborhood', type: 'text' },
+        { label: 'Cidade (Residencial)', key: 'res_city', type: 'text' },
+        
+        // Imóvel
+        { label: '🏠 Endereço do Imóvel', key: 'prop_address', type: 'text', full: true, section: 'Imóvel' },
+        { label: 'CEP (Imóvel)', key: 'prop_cep', type: 'text' },
+        { label: 'Bairro (Imóvel)', key: 'prop_neighborhood', type: 'text' },
+        { label: 'Cidade (Imóvel)', key: 'prop_city', type: 'text' },
+        { label: 'Valor do Imóvel', key: 'valor_imovel', type: 'text' },
+        { label: 'Valor do Aluguel', key: 'valor_aluguel', type: 'text' },
+        { label: 'Condomínio (Valor)', key: 'condom_value', type: 'text' },
+        { label: '% Imobiliária (1º Mês)', key: 'perc_imobiliaria', type: 'text' },
+        { label: 'Comissão Venda', key: 'comissao_venda', type: 'text' },
+        { label: 'Tipo Imóvel', key: 'tipo_imovel', type: 'text' },
+        { label: 'Área Construída (m²)', key: 'area_const', type: 'text' },
+        { label: 'Área Útil (m²)', key: 'area_util', type: 'text' },
+        { label: 'Local das Chaves', key: 'local_chaves', type: 'text' },
+        
+        // Informações Adicionais
+        { label: '📋 Descrição do Imóvel', key: 'descricao', type: 'textarea', full: true, section: 'Informações Adicionais' },
+        { label: 'Finalidade Venda', key: 'finalidade_venda', type: 'text' },
+        { label: 'Finalidade Locação', key: 'finalidade_locacao', type: 'text' },
+        { label: 'Exclusividade', key: 'exclusividade', type: 'text' },
+        { label: 'Exclusividade (dias)', key: 'exclusividade_dias', type: 'text' },
+        { label: 'Prazo Autorização', key: 'prazo', type: 'text' },
+        { label: 'Captação Exclusividade', key: 'captacao_exclusividade', type: 'text' },
+        { label: 'Data Captação Exclusividade', key: 'captacao_exclusividade_data', type: 'text' }
       ];
 
       let html = '<div class="form-grid">';
+      let secaoAtual = '';
+      
       campos.forEach(campo => {
         const valor = ficha[campo.key] || '';
         const classGrid = campo.full ? ' full' : '';
+        
+        // Adicionar título da seção se mudou
+        if (campo.section && campo.section !== secaoAtual) {
+          html += `</div><h3 style="margin-top: 20px; color: #333; border-bottom: 2px solid #007bff; padding-bottom: 8px;">${campo.section}</h3><div class="form-grid">`;
+          secaoAtual = campo.section;
+        }
         
         if (campo.type === 'textarea') {
           html += `<div class="form-grid${classGrid}"><div class="form-group"><label>${campo.label}:</label><textarea data-key="${campo.key}">${valor}</textarea></div></div>`;
