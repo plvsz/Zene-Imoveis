@@ -858,6 +858,7 @@
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+              _criador: sessionStorage.getItem('usuarioLogado') ? JSON.parse(sessionStorage.getItem('usuarioLogado')).username : 'anônimo',
               ...Object.fromEntries(fd.entries())
             })
           })

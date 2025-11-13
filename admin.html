@@ -6,6 +6,7 @@
   <title>Admin - Ficha de Captação</title>
   <link rel="stylesheet" href="styles.css">
   <style>
+    body { background: #f5f5f5; }
     .login-container {
       max-width: 400px;
       margin: 80px auto;
@@ -13,82 +14,71 @@
       padding: 40px;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      text-align: center;
     }
-    .login-container h2 { margin-bottom: 24px; }
-    .login-container input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 12px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 1em;
-      box-sizing: border-box;
-    }
-    .login-container button {
-      width: 100%;
-      padding: 12px;
-      background: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      font-size: 1em;
-      cursor: pointer;
-      font-weight: bold;
-    }
+    .login-container h2 { text-align: center; margin-bottom: 24px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; margin-bottom: 4px; font-weight: bold; }
+    .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    .login-container button { width: 100%; padding: 12px; background: #007bff; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1em; }
     .login-container button:hover { background: #0056b3; }
-    .login-container .error { color: #dc3545; margin: 12px 0; }
-    .admin-panel {
-      display: none;
-      max-width: 1200px;
-      margin: 20px auto;
-    }
-    .admin-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 20px;
-      border-bottom: 2px solid #ccc;
-    }
-    .btn-logout { background: #dc3545; padding: 8px 16px; color: #fff; text-decoration: none; border-radius: 4px; cursor: pointer; border: none; font-size: 1em; }
-    .btn-logout:hover { background: #c82333; }
+    .error { color: #dc3545; margin: 12px 0; text-align: center; }
+    .info { color: #17a2b8; margin: 12px 0; text-align: center; font-size: 0.9em; }
+    
+    .admin-panel { display: none; max-width: 1200px; margin: 20px auto; }
+    .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .admin-header h2 { margin: 0; }
+    .user-info { font-size: 0.95em; color: #666; }
+    .user-info strong { color: #333; }
+    
+    .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .tab-btn { padding: 10px 20px; background: #fff; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .tab-btn.active { background: #007bff; color: #fff; border-color: #007bff; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    
     .fichas-list {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
     }
     .ficha-card {
       background: #fff;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 20px;
+      border-left: 4px solid #007bff;
+      border-radius: 4px;
+      padding: 16px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .ficha-card h3 { margin-top: 0; }
-    .ficha-card p { margin: 8px 0; font-size: 0.9em; color: #666; }
-    .ficha-card .actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px;
-    }
-    .ficha-card button {
-      flex: 1;
-      padding: 8px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-    }
+    .ficha-card h3 { margin: 0 0 12px 0; }
+    .ficha-card p { margin: 4px 0; font-size: 0.9em; color: #666; }
+    .ficha-card .criador { font-size: 0.85em; color: #999; margin-top: 8px; }
+    .actions { display: flex; gap: 8px; margin-top: 12px; }
+    .actions button { flex: 1; padding: 8px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.9em; }
     .btn-edit { background: #28a745; color: #fff; }
     .btn-edit:hover { background: #218838; }
     .btn-delete { background: #dc3545; color: #fff; }
     .btn-delete:hover { background: #c82333; }
-    .empty-state {
-      text-align: center;
-      padding: 40px;
-      color: #666;
+    .btn-disabled { background: #ccc; color: #999; cursor: not-allowed; }
+    
+    .users-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
     }
+    .user-card {
+      background: #fff;
+      border-radius: 4px;
+      padding: 16px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .user-card h3 { margin: 0 0 8px 0; }
+    .user-card p { margin: 4px 0; font-size: 0.9em; }
+    .role-badge { display: inline-block; padding: 4px 12px; border-radius: 16px; font-size: 0.85em; font-weight: bold; }
+    .role-normal { background: #e3f2fd; color: #1976d2; }
+    .role-gerente { background: #fff3e0; color: #f57c00; }
+    .role-admin { background: #f3e5f5; color: #7b1fa2; }
+    
+    .empty-state { text-align: center; padding: 40px; color: #999; background: #fff; border-radius: 4px; }
+    
     .modal {
       display: none;
       position: fixed;
@@ -100,35 +90,36 @@
       z-index: 1000;
       overflow-y: auto;
     }
-    .modal.active { display: block; }
+    .modal.active { display: flex; align-items: center; justify-content: center; }
     .modal-content {
       background: #fff;
-      margin: 20px auto;
-      padding: 40px;
-      max-width: 800px;
+      padding: 32px;
+      max-width: 700px;
       border-radius: 8px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      max-height: 90vh;
+      overflow-y: auto;
     }
-    .modal-content h2 { margin-top: 0; }
-    .modal-close { float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin: 20px 0;
-    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-header h2 { margin: 0; }
+    .modal-close { font-size: 28px; cursor: pointer; }
+    
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
     .form-grid.full { grid-template-columns: 1fr; }
-    .form-grid input, .form-grid textarea {
-      padding: 8px;
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 10px;
       border: 1px solid #ccc;
       border-radius: 4px;
       font-size: 0.95em;
+      box-sizing: border-box;
     }
-    .form-grid textarea { min-height: 80px; }
+    .form-group textarea { min-height: 100px; }
+    
     .modal-actions {
       display: flex;
       gap: 8px;
-      margin-top: 20px;
+      margin-top: 24px;
     }
     .modal-actions button {
       flex: 1;
@@ -137,112 +128,242 @@
       border-radius: 4px;
       cursor: pointer;
       font-weight: bold;
-      font-size: 1em;
     }
     .btn-save { background: #28a745; color: #fff; }
     .btn-save:hover { background: #218838; }
     .btn-cancel { background: #6c757d; color: #fff; }
     .btn-cancel:hover { background: #5a6268; }
+    .btn-logout { background: #dc3545; color: #fff; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .btn-logout:hover { background: #c82333; }
+    
+    .add-button { background: #28a745; color: #fff; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1em; margin-bottom: 16px; }
+    .add-button:hover { background: #218838; }
   </style>
 </head>
 <body>
   <header class="site-header">
-    <h1>🔐 Painel Administrativo</h1>
+    <h1>🔐 Painel de Controle</h1>
   </header>
 
   <!-- Login -->
   <div class="login-container" id="loginContainer">
-    <h2>Faça login para continuar</h2>
-    <input type="password" id="senhaInput" placeholder="Senha" autocomplete="off">
+    <h2>Faça login</h2>
+    <div class="form-group">
+      <label for="username">Usuário:</label>
+      <input type="text" id="username" placeholder="seu usuário">
+    </div>
+    <div class="form-group">
+      <label for="password">Senha:</label>
+      <input type="password" id="password" placeholder="sua senha">
+    </div>
     <button onclick="fazerLogin()">Entrar</button>
-    <div class="error" id="erroLogin" style="display: none;">Senha incorreta</div>
-    <p><a href="index.html" style="font-size: 0.9em;">← Voltar para formulário</a></p>
+    <div class="error" id="erroLogin" style="display: none;">Usuário ou senha incorretos</div>
+    <div class="info">Demo: username=<strong>admin</strong>, password=<strong>admin</strong></div>
+    <p style="text-align: center; margin-top: 20px;"><a href="index.html">← Voltar para formulário</a></p>
   </div>
 
   <!-- Admin Panel -->
   <div class="admin-panel" id="adminPanel">
     <div class="admin-header">
-      <h2>📋 Fichas Salvas</h2>
-      <button class="btn-logout" onclick="fazerLogout()">Sair</button>
+      <div>
+        <h2>📋 Painel de Controle</h2>
+        <div class="user-info">Conectado como: <strong id="currentUser"></strong> <span id="currentRole"></span></div>
+      </div>
+      <button class="btn-logout" onclick="fazerLogout()">🚪 Sair</button>
     </div>
 
-    <div id="fichasList" class="fichas-list">
-      <div class="empty-state">Carregando fichas...</div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="mudarTab('fichas')">📄 Fichas</button>
+      <button class="tab-btn" id="gerenciar-btn" onclick="mudarTab('gerenciar')" style="display: none;">👥 Gerenciar Usuários</button>
+    </div>
+
+    <!-- Tab Fichas -->
+    <div class="tab-content active" id="fichas-tab">
+      <div id="fichasList" class="fichas-list">
+        <div class="empty-state">Carregando fichas...</div>
+      </div>
+    </div>
+
+    <!-- Tab Gerenciar Usuários (Admin only) -->
+    <div class="tab-content" id="gerenciar-tab">
+      <button class="add-button" onclick="abrirModalNovoUsuario()">➕ Novo Usuário</button>
+      <div id="usuariosList" class="users-list">
+        <div class="empty-state">Carregando usuários...</div>
+      </div>
     </div>
   </div>
 
-  <!-- Modal de Edição -->
-  <div class="modal" id="modalEdicao">
+  <!-- Modal Edição de Ficha -->
+  <div class="modal" id="modalEdicaoFicha">
     <div class="modal-content">
-      <span class="modal-close" onclick="fecharModal()">&times;</span>
-      <h2>Editar Ficha: <span id="fichaName"></span></h2>
+      <div class="modal-header">
+        <h2>Editar Ficha: <span id="fichaName"></span></h2>
+        <span class="modal-close" onclick="fecharModal('fichas')">&times;</span>
+      </div>
       <div id="formEdicao"></div>
       <div class="modal-actions">
-        <button class="btn-save" onclick="salvarAlteracoes()">💾 Salvar</button>
-        <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+        <button class="btn-save" onclick="salvarAlteracoesFicha()">💾 Salvar</button>
+        <button class="btn-cancel" onclick="fecharModal('fichas')">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Novo/Editar Usuário -->
+  <div class="modal" id="modalUsuario">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalUsuarioTitle">Novo Usuário</h2>
+        <span class="modal-close" onclick="fecharModal('usuario')">&times;</span>
+      </div>
+      <div class="form-group">
+        <label for="novoUsername">Usuário:</label>
+        <input type="text" id="novoUsername" placeholder="nome de usuário">
+      </div>
+      <div class="form-group">
+        <label for="novoPassword">Senha:</label>
+        <input type="password" id="novoPassword" placeholder="senha">
+      </div>
+      <div class="form-group">
+        <label for="novoRole">Papel:</label>
+        <select id="novoRole">
+          <option value="normal">Usuário Normal</option>
+          <option value="gerente_locacao">Gerente de Locação</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-save" onclick="salvarUsuario()">💾 Salvar</button>
+        <button class="btn-cancel" onclick="fecharModal('usuario')">Cancelar</button>
       </div>
     </div>
   </div>
 
   <script>
-    const SENHA_ADMIN = 'zene2025';
+    let usuarioLogado = null;
     let fichasData = [];
+    let usuariosData = [];
     let fichaEditando = null;
+    let usuarioEditando = null;
+
+    function inicializarDados() {
+      usuariosData = JSON.parse(localStorage.getItem('usuarios') || '[]');
+      if (usuariosData.length === 0) {
+        usuariosData = [
+          { id: 1, username: 'admin', password: 'admin', role: 'admin', dataCriacao: new Date().toLocaleString('pt-BR') }
+        ];
+        localStorage.setItem('usuarios', JSON.stringify(usuariosData));
+      }
+      fichasData = JSON.parse(localStorage.getItem('fichas_salvas') || '[]');
+    }
 
     function fazerLogin() {
-      const senha = document.getElementById('senhaInput').value;
+      inicializarDados();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
       const erroLogin = document.getElementById('erroLogin');
       
-      if (senha === SENHA_ADMIN) {
-        sessionStorage.setItem('admin_logged', 'true');
+      const usuario = usuariosData.find(u => u.username === username && u.password === password);
+      
+      if (usuario) {
+        usuarioLogado = usuario;
+        sessionStorage.setItem('usuarioLogado', JSON.stringify(usuario));
         document.getElementById('loginContainer').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'block';
+        document.getElementById('currentUser').textContent = usuario.username;
+        
+        const roleLabel = { admin: '👑 Admin', gerente_locacao: '📊 Gerente', normal: '👤 Normal' };
+        document.getElementById('currentRole').innerHTML = `<span class="role-badge role-${usuario.role}">${roleLabel[usuario.role]}</span>`;
+        
+        if (usuario.role === 'admin') {
+          document.getElementById('gerenciar-btn').style.display = 'block';
+        }
+        
         carregarFichas();
-        document.getElementById('senhaInput').value = '';
+        if (usuario.role === 'admin') carregarUsuarios();
       } else {
         erroLogin.style.display = 'block';
       }
     }
 
     function fazerLogout() {
-      sessionStorage.removeItem('admin_logged');
+      sessionStorage.removeItem('usuarioLogado');
       location.reload();
     }
 
     function carregarFichas() {
-      const fichas = JSON.parse(localStorage.getItem('fichas_salvas') || '[]');
-      fichasData = fichas;
-      
+      fichasData = JSON.parse(localStorage.getItem('fichas_salvas') || '[]');
       const container = document.getElementById('fichasList');
       
-      if (fichas.length === 0) {
+      if (fichasData.length === 0) {
         container.innerHTML = '<div class="empty-state">Nenhuma ficha salva ainda.</div>';
         return;
       }
 
-      container.innerHTML = fichas.map((ficha, idx) => `
-        <div class="ficha-card">
-          <h3>${ficha.nomeFicha || 'Sem nome'}</h3>
-          <p><strong>ID:</strong> ${ficha.id || 'N/A'}</p>
-          <p><strong>Proprietário:</strong> ${ficha.owner_name || 'N/A'}</p>
-          <p><strong>CPF/CNPJ:</strong> ${ficha.owner_cpf_cnpj || 'N/A'}</p>
-          <p><strong>Endereço:</strong> ${ficha.prop_address || 'N/A'}</p>
-          <p><strong>Data:</strong> ${ficha._data_hora || 'N/A'}</p>
-          <div class="actions">
-            <button class="btn-edit" onclick="abrirEdicao(${idx})">✏️ Editar</button>
-            <button class="btn-delete" onclick="deletarFicha(${idx})">🗑️ Deletar</button>
+      let fichasParaMostrar = fichasData;
+      if (usuarioLogado.role === 'normal') {
+        fichasParaMostrar = fichasData.filter(f => f._criador === usuarioLogado.username);
+      }
+
+      if (fichasParaMostrar.length === 0) {
+        container.innerHTML = '<div class="empty-state">Nenhuma ficha para você visualizar.</div>';
+        return;
+      }
+
+      container.innerHTML = fichasParaMostrar.map((ficha, idx) => {
+        const idxOriginal = fichasData.indexOf(ficha);
+        const podeEditar = usuarioLogado.role === 'admin' || usuarioLogado.role === 'gerente_locacao' || 
+                           (usuarioLogado.role === 'normal' && ficha._criador === usuarioLogado.username);
+        const podeDeletar = usuarioLogado.role === 'admin' || usuarioLogado.role === 'gerente_locacao' ||
+                            (usuarioLogado.role === 'normal' && ficha._criador === usuarioLogado.username);
+
+        return `
+          <div class="ficha-card">
+            <h3>${ficha.nomeFicha || 'Sem nome'}</h3>
+            <p><strong>ID:</strong> ${ficha.id || 'N/A'}</p>
+            <p><strong>Proprietário:</strong> ${ficha.owner_name || 'N/A'}</p>
+            <p><strong>Endereço:</strong> ${ficha.prop_address || 'N/A'}</p>
+            <p><strong>Data:</strong> ${ficha._data_hora || 'N/A'}</p>
+            <p class="criador">👤 Criado por: ${ficha._criador || 'desconhecido'}</p>
+            <div class="actions">
+              <button class="btn-edit ${!podeEditar ? 'btn-disabled' : ''}" onclick="abrirEdicao(${idxOriginal})" ${!podeEditar ? 'disabled' : ''}>✏️ Editar</button>
+              <button class="btn-delete ${!podeDeletar ? 'btn-disabled' : ''}" onclick="deletarFicha(${idxOriginal})" ${!podeDeletar ? 'disabled' : ''}>🗑️ Deletar</button>
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
+    }
+
+    function carregarUsuarios() {
+      const container = document.getElementById('usuariosList');
+      
+      if (usuariosData.length === 0) {
+        container.innerHTML = '<div class="empty-state">Nenhum usuário cadastrado.</div>';
+        return;
+      }
+
+      container.innerHTML = usuariosData.map((usuario, idx) => {
+        const roleLabel = { admin: '👑 Admin', gerente_locacao: '📊 Gerente de Locação', normal: '👤 Usuário Normal' };
+        return `
+          <div class="user-card">
+            <h3>${usuario.username}</h3>
+            <p><span class="role-badge role-${usuario.role}">${roleLabel[usuario.role]}</span></p>
+            <p>Data de criação: ${usuario.dataCriacao || 'N/A'}</p>
+            <div class="actions">
+              <button class="btn-edit" onclick="abrirEdicaoUsuario(${idx})">✏️ Editar</button>
+              <button class="btn-delete" onclick="deletarUsuario(${idx})">🗑️ Deletar</button>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     function abrirEdicao(idx) {
+      if (fichasData[idx] === undefined) return;
       fichaEditando = idx;
       const ficha = fichasData[idx];
       
       document.getElementById('fichaName').textContent = ficha.nomeFicha || 'Sem nome';
       
-      // Campos principais para edição
       const campos = [
         { label: 'Nome da Ficha', key: 'nomeFicha', type: 'text' },
         { label: 'Proprietário', key: 'owner_name', type: 'text' },
@@ -250,11 +371,8 @@
         { label: 'Telefone', key: 'owner_phone', type: 'text' },
         { label: 'Email', key: 'email1', type: 'email' },
         { label: 'Endereço (Imóvel)', key: 'prop_address', type: 'text', full: true },
-        { label: 'Bairro (Imóvel)', key: 'prop_neighborhood', type: 'text' },
-        { label: 'Cidade (Imóvel)', key: 'prop_city', type: 'text' },
-        { label: 'Finalidade Venda', key: 'finalidade_venda', type: 'checkbox' },
-        { label: 'Finalidade Locação', key: 'finalidade_locacao', type: 'checkbox' },
-        { label: 'Valor Imóvel', key: 'valor_imovel', type: 'text' },
+        { label: 'Bairro', key: 'prop_neighborhood', type: 'text' },
+        { label: 'Cidade', key: 'prop_city', type: 'text' },
         { label: 'Valor Aluguel', key: 'valor_aluguel', type: 'text' },
         { label: 'Descrição', key: 'descricao', type: 'textarea', full: true }
       ];
@@ -265,26 +383,18 @@
         const classGrid = campo.full ? ' full' : '';
         
         if (campo.type === 'textarea') {
-          html += `<div class="form-grid${classGrid}"><label>${campo.label}:<br><textarea data-key="${campo.key}">${valor}</textarea></label></div>`;
-        } else if (campo.type === 'checkbox') {
-          const checked = valor ? 'checked' : '';
-          html += `<div class="form-grid"><label><input type="checkbox" data-key="${campo.key}" ${checked}> ${campo.label}</label></div>`;
+          html += `<div class="form-grid${classGrid}"><div class="form-group"><label>${campo.label}:</label><textarea data-key="${campo.key}">${valor}</textarea></div></div>`;
         } else {
-          html += `<div class="form-grid${classGrid}"><label>${campo.label}:<br><input type="${campo.type}" data-key="${campo.key}" value="${valor}"></label></div>`;
+          html += `<div class="form-grid${classGrid}"><div class="form-group"><label>${campo.label}:</label><input type="${campo.type}" data-key="${campo.key}" value="${valor}"></div></div>`;
         }
       });
       html += '</div>';
 
       document.getElementById('formEdicao').innerHTML = html;
-      document.getElementById('modalEdicao').classList.add('active');
+      document.getElementById('modalEdicaoFicha').classList.add('active');
     }
 
-    function fecharModal() {
-      document.getElementById('modalEdicao').classList.remove('active');
-      fichaEditando = null;
-    }
-
-    function salvarAlteracoes() {
+    function salvarAlteracoesFicha() {
       if (fichaEditando === null) return;
 
       const ficha = fichasData[fichaEditando];
@@ -292,18 +402,12 @@
 
       inputs.forEach(input => {
         const key = input.getAttribute('data-key');
-        if (input.type === 'checkbox') {
-          ficha[key] = input.checked ? 'on' : '';
-        } else {
-          ficha[key] = input.value;
-        }
+        ficha[key] = input.value;
       });
 
-      // Salvar no localStorage
       localStorage.setItem('fichas_salvas', JSON.stringify(fichasData));
-      
       alert('✅ Ficha atualizada com sucesso!');
-      fecharModal();
+      fecharModal('fichas');
       carregarFichas();
     }
 
@@ -316,26 +420,115 @@
       }
     }
 
-    // Verificar login ao carregar
+    function abrirModalNovoUsuario() {
+      usuarioEditando = null;
+      document.getElementById('modalUsuarioTitle').textContent = 'Novo Usuário';
+      document.getElementById('novoUsername').value = '';
+      document.getElementById('novoPassword').value = '';
+      document.getElementById('novoRole').value = 'normal';
+      document.getElementById('modalUsuario').classList.add('active');
+    }
+
+    function abrirEdicaoUsuario(idx) {
+      usuarioEditando = idx;
+      const usuario = usuariosData[idx];
+      document.getElementById('modalUsuarioTitle').textContent = `Editar: ${usuario.username}`;
+      document.getElementById('novoUsername').value = usuario.username;
+      document.getElementById('novoPassword').value = usuario.password;
+      document.getElementById('novoRole').value = usuario.role;
+      document.getElementById('modalUsuario').classList.add('active');
+    }
+
+    function salvarUsuario() {
+      const username = document.getElementById('novoUsername').value.trim();
+      const password = document.getElementById('novoPassword').value.trim();
+      const role = document.getElementById('novoRole').value;
+
+      if (!username || !password) {
+        alert('❌ Usuário e senha são obrigatórios');
+        return;
+      }
+
+      if (usuarioEditando === null) {
+        if (usuariosData.find(u => u.username === username)) {
+          alert('❌ Este usuário já existe');
+          return;
+        }
+        usuariosData.push({
+          id: Date.now(),
+          username: username,
+          password: password,
+          role: role,
+          dataCriacao: new Date().toLocaleString('pt-BR')
+        });
+      } else {
+        usuariosData[usuarioEditando].username = username;
+        usuariosData[usuarioEditando].password = password;
+        usuariosData[usuarioEditando].role = role;
+      }
+
+      localStorage.setItem('usuarios', JSON.stringify(usuariosData));
+      alert('✅ Usuário salvo com sucesso!');
+      fecharModal('usuario');
+      carregarUsuarios();
+    }
+
+    function deletarUsuario(idx) {
+      if (usuariosData[idx].username === usuarioLogado.username) {
+        alert('❌ Você não pode deletar sua própria conta');
+        return;
+      }
+      if (confirm(`⚠️ Deletar o usuário "${usuariosData[idx].username}"?`)) {
+        usuariosData.splice(idx, 1);
+        localStorage.setItem('usuarios', JSON.stringify(usuariosData));
+        carregarUsuarios();
+        alert('✅ Usuário deletado com sucesso!');
+      }
+    }
+
+    function mudarTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(tab + '-tab').classList.add('active');
+    }
+
+    function fecharModal(tipo) {
+      if (tipo === 'fichas') {
+        document.getElementById('modalEdicaoFicha').classList.remove('active');
+        fichaEditando = null;
+      } else if (tipo === 'usuario') {
+        document.getElementById('modalUsuario').classList.remove('active');
+        usuarioEditando = null;
+      }
+    }
+
     window.addEventListener('load', function() {
-      if (sessionStorage.getItem('admin_logged') === 'true') {
+      inicializarDados();
+      const usuarioSession = sessionStorage.getItem('usuarioLogado');
+      if (usuarioSession) {
+        usuarioLogado = JSON.parse(usuarioSession);
         document.getElementById('loginContainer').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'block';
+        document.getElementById('currentUser').textContent = usuarioLogado.username;
+        const roleLabel = { admin: '👑 Admin', gerente_locacao: '📊 Gerente', normal: '👤 Normal' };
+        document.getElementById('currentRole').innerHTML = `<span class="role-badge role-${usuarioLogado.role}">${roleLabel[usuarioLogado.role]}</span>`;
+        if (usuarioLogado.role === 'admin') document.getElementById('gerenciar-btn').style.display = 'block';
         carregarFichas();
-      } else {
-        document.getElementById('loginContainer').style.display = 'block';
-        document.getElementById('adminPanel').style.display = 'none';
+        if (usuarioLogado.role === 'admin') carregarUsuarios();
       }
     });
 
-    // Enter para fazer login
-    document.getElementById('senhaInput').addEventListener('keypress', function(e) {
+    document.getElementById('password').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') fazerLogin();
     });
 
-    // Fechar modal ao clicar fora
-    document.getElementById('modalEdicao').addEventListener('click', function(e) {
-      if (e.target === this) fecharModal();
+    document.getElementById('modalEdicaoFicha').addEventListener('click', function(e) {
+      if (e.target === this) fecharModal('fichas');
+    });
+    document.getElementById('modalUsuario').addEventListener('click', function(e) {
+      if (e.target === this) fecharModal('usuario');
     });
   </script>
 </body>
