@@ -562,8 +562,19 @@
         return;
       }
 
+      if (username.length < 3) {
+        alert('❌ Usuário deve ter pelo menos 3 caracteres');
+        return;
+      }
+
+      if (password.length < 3) {
+        alert('❌ Senha deve ter pelo menos 3 caracteres');
+        return;
+      }
+
       if (usuarioEditando === null) {
-        if (usuariosData.find(u => u.username === username)) {
+        // Verificar se usuário já existe (case-insensitive)
+        if (usuariosData.find(u => u.username.toLowerCase() === username.toLowerCase())) {
           alert('❌ Este usuário já existe');
           return;
         }
@@ -574,14 +585,16 @@
           role: role,
           dataCriacao: new Date().toLocaleString('pt-BR')
         });
+        alert('✅ Usuário criado com sucesso!');
       } else {
+        // Editar usuário existente
         usuariosData[usuarioEditando].username = username;
         usuariosData[usuarioEditando].password = password;
         usuariosData[usuarioEditando].role = role;
+        alert('✅ Usuário atualizado com sucesso!');
       }
 
       localStorage.setItem('usuarios', JSON.stringify(usuariosData));
-      alert('✅ Usuário salvo com sucesso!');
       fecharModal('usuario');
       carregarUsuarios();
     }
