@@ -135,7 +135,15 @@
 
   <script>
     function inicializarDadosPadrao() {
-      // SEMPRE reinicializar usuários padrão para garantir integridade
+      const usuariosExistentes = JSON.parse(localStorage.getItem('usuarios') || '[]');
+      
+      // Se houver usuários, NÃO sobrescrever
+      if (usuariosExistentes.length > 0) {
+        console.log('Usuários já existem no localStorage:', usuariosExistentes);
+        return;
+      }
+      
+      // Apenas criar usuários padrão se não houver nenhum
       const usuariosPadrao = [
         { id: 1, username: 'admin', password: 'admin', role: 'admin', dataCriacao: new Date().toLocaleString('pt-BR') },
         { id: 2, username: 'gerente1', password: 'gerente1', role: 'gerente_locacao', dataCriacao: new Date().toLocaleString('pt-BR') },
@@ -143,7 +151,7 @@
       ];
       
       localStorage.setItem('usuarios', JSON.stringify(usuariosPadrao));
-      console.log('Usuários reinicializados:', usuariosPadrao);
+      console.log('Usuários padrão criados pela primeira vez:', usuariosPadrao);
     }
 
     function fazerLogin(event) {
