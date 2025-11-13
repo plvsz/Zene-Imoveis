@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minhas Fichas - Ficha de Captação</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { background: #f5f5f5; }
+    .container-minhas-fichas { max-width: 1200px; margin: 20px auto; padding: 0 20px; }
+    
+    .header-minhas-fichas {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .header-minhas-fichas h1 { margin: 0; color: #333; }
+    .header-minhas-fichas .user-info { color: #666; font-size: 0.95em; }
+    
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .btn-voltar {
+      padding: 10px 20px;
+      background: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .btn-voltar:hover { background: #5a6268; }
+    
+    .btn-sair {
+      padding: 10px 20px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .btn-sair:hover { background: #c82333; }
+    
+    .fichas-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+    
+    .ficha-card {
+      background: #fff;
+      border-left: 4px solid #007bff;
+      border-radius: 4px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    
+    .ficha-card:hover {
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      transform: translateY(-2px);
+    }
+    
+    .ficha-card h3 { margin: 0 0 12px 0; color: #333; }
+    .ficha-card p { margin: 6px 0; font-size: 0.9em; color: #666; }
+    .ficha-card .data { font-size: 0.85em; color: #999; margin-top: 8px; }
+    
+    .ficha-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .btn-edit {
+      flex: 1;
+      padding: 8px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .btn-edit:hover { background: #218838; }
+    
+    .btn-delete {
+      flex: 1;
+      padding: 8px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .btn-delete:hover { background: #c82333; }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 40px;
+      color: #999;
+      background: #fff;
+      border-radius: 4px;
+    }
+    
+    .empty-state-icon { font-size: 3em; margin-bottom: 20px; }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    
+    .modal.active { display: flex; align-items: center; justify-content: center; }
+    
+    .modal-content {
+      background: #fff;
+      padding: 32px;
+      max-width: 800px;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      max-height: 90vh;
+      overflow-y: auto;
+      width: 90%;
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .modal-header h2 { margin: 0; }
+    .modal-close {
+      font-size: 2em;
+      cursor: pointer;
+      color: #999;
+    }
+    
+    .modal-close:hover { color: #333; }
+    
+    .ficha-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 12px;
+    }
+    
+    .detail-item {
+      margin-bottom: 12px;
+    }
+    
+    .detail-label {
+      font-weight: bold;
+      color: #333;
+      font-size: 0.9em;
+    }
+    
+    .detail-value {
+      color: #666;
+      margin-top: 4px;
+      word-break: break-word;
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid #eee;
+    }
+    
+    .btn-cancel {
+      flex: 1;
+      padding: 12px;
+      background: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .btn-cancel:hover { background: #5a6268; }
+  </style>
+</head>
+<body>
+  <div class="container-minhas-fichas">
+    <div class="header-minhas-fichas">
+      <div>
+        <h1>📋 Minhas Fichas</h1>
+        <p class="user-info">Veja as fichas que você criou</p>
+      </div>
+      <div class="header-actions">
+        <a href="index.html" class="btn-voltar">← Voltar</a>
+        <button onclick="fazerLogout()" class="btn-sair">🚪 Sair</button>
+      </div>
+    </div>
+
+    <div id="fichasContainer" class="fichas-container">
+      <div class="empty-state">
+        <div class="empty-state-icon">⏳</div>
+        <p>Carregando suas fichas...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Visualizar Ficha -->
+  <div class="modal" id="modalVisualizacao">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📄 Ficha: <span id="fichaNameModal"></span></h2>
+        <span class="modal-close" onclick="fecharModal()">&times;</span>
+      </div>
+      <div id="fichaDetailsContent" class="ficha-details"></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="fecharModal()">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let usuarioLogado = null;
+    let fichasData = [];
+
+    // Verificar login
+    window.addEventListener('load', function() {
+      const usuarioLogado_sessao = sessionStorage.getItem('usuarioLogado');
+      if (!usuarioLogado_sessao) {
+        alert('❌ Você precisa fazer login para acessar.');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      usuarioLogado = JSON.parse(usuarioLogado_sessao);
+      carregarMinhasFichas();
+    });
+
+    function carregarMinhasFichas() {
+      fichasData = JSON.parse(localStorage.getItem('fichas_salvas') || '[]');
+      const container = document.getElementById('fichasContainer');
+
+      // Filtrar apenas as fichas criadas pelo usuário logado
+      const minhasFichas = fichasData.filter(f => f._criador === usuarioLogado.username);
+
+      if (minhasFichas.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <p><strong>Você ainda não criou nenhuma ficha</strong></p>
+            <p style="font-size: 0.9em; margin-top: 12px;">
+              <a href="index.html" style="color: #007bff; text-decoration: none;">Clique aqui para criar uma nova ficha →</a>
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = minhasFichas.map((ficha, idx) => {
+        const idxOriginal = fichasData.indexOf(ficha);
+        return `
+          <div class="ficha-card">
+            <h3>${ficha.nomeFicha || 'Sem nome'}</h3>
+            <p><strong>ID:</strong> ${ficha.id || 'N/A'}</p>
+            <p><strong>Proprietário:</strong> ${ficha.owner_name || 'N/A'}</p>
+            <p><strong>Endereço:</strong> ${ficha.prop_address || 'N/A'}</p>
+            <p class="data"><strong>Criada em:</strong> ${ficha._data_hora || 'N/A'}</p>
+            <div class="ficha-actions">
+              <button class="btn-edit" onclick="visualizarFicha(${idxOriginal})">👁️ Visualizar</button>
+              <button class="btn-delete" onclick="deletarFicha(${idxOriginal})">🗑️ Deletar</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function visualizarFicha(idx) {
+      const ficha = fichasData[idx];
+      
+      document.getElementById('fichaNameModal').textContent = ficha.nomeFicha;
+      
+      // Mapear campos com rótulos
+      const camposExibicao = {
+        'nomeFicha': 'Nome da Ficha',
+        'id': 'ID da Ficha',
+        'owner_name': 'Proprietário',
+        'spouse_name': 'Cônjuge',
+        'owner_cpf_cnpj': 'CPF/CNPJ (Proprietário)',
+        'spouse_cpf_cnpj': 'CPF/CNPJ (Cônjuge)',
+        'owner_phone': 'Telefone (Proprietário)',
+        'spouse_phone': 'Telefone (Cônjuge)',
+        'email1': 'E-mail 1',
+        'email2': 'E-mail 2',
+        'prop_address': 'Endereço do Imóvel',
+        'prop_neighborhood': 'Bairro',
+        'prop_city': 'Cidade',
+        'prop_type': 'Tipo de Imóvel',
+        'prop_area': 'Área (m²)',
+        'prop_rooms': 'Quartos',
+        'prop_bathrooms': 'Banheiros',
+        'prop_price': 'Valor do Imóvel',
+        'prop_rent': 'Valor do Aluguel',
+        '_data_hora': 'Data de Criação',
+        '_criador': 'Criado por'
+      };
+
+      let html = '';
+      for (const [campo, label] of Object.entries(camposExibicao)) {
+        const valor = ficha[campo];
+        if (valor) {
+          html += `
+            <div class="detail-item">
+              <div class="detail-label">${label}:</div>
+              <div class="detail-value">${valor}</div>
+            </div>
+          `;
+        }
+      }
+
+      document.getElementById('fichaDetailsContent').innerHTML = html;
+      document.getElementById('modalVisualizacao').classList.add('active');
+    }
+
+    function deletarFicha(idx) {
+      const ficha = fichasData[idx];
+      if (ficha._criador !== usuarioLogado.username) {
+        alert('❌ Você só pode deletar suas próprias fichas!');
+        return;
+      }
+      
+      if (confirm(`⚠️ Deletar a ficha "${ficha.nomeFicha}"? Esta ação não pode ser desfeita.`)) {
+        fichasData.splice(idx, 1);
+        localStorage.setItem('fichas_salvas', JSON.stringify(fichasData));
+        alert('✅ Ficha deletada com sucesso!');
+        carregarMinhasFichas();
+      }
+    }
+
+    function fecharModal() {
+      document.getElementById('modalVisualizacao').classList.remove('active');
+    }
+
+    function fazerLogout() {
+      if (confirm('Deseja sair do sistema?')) {
+        sessionStorage.removeItem('usuarioLogado');
+        window.location.href = 'login.html';
+      }
+    }
+  </script>
+</body>
+</html>
