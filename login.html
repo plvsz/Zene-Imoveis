@@ -133,14 +133,6 @@
       </div>
     </form>
 
-    <div class="demo-users">
-      <strong>📌 Usuários de Demonstração:</strong>
-      <div class="user">👑 admin / admin</div>
-      <div class="user">📊 gerente1 / gerente1</div>
-      <div class="user">👤 usuario1 / usuario1</div>
-    </div>
-  </div>
-
   <script>
     function inicializarDadosPadrao() {
       const usuariosExistentes = JSON.parse(localStorage.getItem('usuarios') || '[]');
@@ -163,12 +155,13 @@
       
       inicializarDadosPadrao();
       
-      const username = document.getElementById('username').value.trim();
+      const username = document.getElementById('username').value.trim().toLowerCase();
       const password = document.getElementById('password').value;
       const erroDiv = document.getElementById('erroLogin');
       
       const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
-      const usuario = usuarios.find(u => u.username === username && u.password === password);
+      // Comparação case-insensitive para username
+      const usuario = usuarios.find(u => u.username.toLowerCase() === username && u.password === password);
       
       if (usuario) {
         sessionStorage.setItem('usuarioLogado', JSON.stringify(usuario));

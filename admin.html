@@ -291,11 +291,12 @@
 
     function fazerLogin() {
       inicializarDados();
-      const username = document.getElementById('username').value.trim();
+      const username = document.getElementById('username').value.trim().toLowerCase();
       const password = document.getElementById('password').value;
       const erroLogin = document.getElementById('erroLogin');
       
-      const usuario = usuariosData.find(u => u.username === username && u.password === password);
+      // Comparação case-insensitive para username
+      const usuario = usuariosData.find(u => u.username.toLowerCase() === username && u.password === password);
       
       if (usuario) {
         usuarioLogado = usuario;
@@ -307,8 +308,15 @@
         const roleLabel = { admin: '👑 Admin', gerente_locacao: '📊 Gerente', normal: '👤 Normal' };
         document.getElementById('currentRole').innerHTML = `<span class="role-badge role-${usuario.role}">${roleLabel[usuario.role]}</span>`;
         
+        // Mostrar aba gerenciar SEMPRE se for admin
+        console.log('Usuário logado:', usuario.username, 'Role:', usuario.role);
         if (usuario.role === 'admin') {
-          document.getElementById('gerenciar-btn').style.display = 'block';
+          console.log('Admin detectado, mostrando aba gerenciar...');
+          const btn = document.getElementById('gerenciar-btn');
+          if (btn) {
+            btn.style.display = 'inline-block';
+            console.log('Aba gerenciar visível!');
+          }
         }
         
         carregarFichas();
@@ -333,6 +341,7 @@
       }
 
       let fichasParaMostrar = fichasData;
+      // Admin e Gerente de Locação veem todas as fichas; Normal vê apenas suas
       if (usuarioLogado.role === 'normal') {
         fichasParaMostrar = fichasData.filter(f => f._criador === usuarioLogado.username);
       }
@@ -641,9 +650,13 @@
         document.getElementById('currentUser').textContent = usuarioLogado.username;
         const roleLabel = { admin: '👑 Admin', gerente_locacao: '📊 Gerente', normal: '👤 Normal' };
         document.getElementById('currentRole').innerHTML = `<span class="role-badge role-${usuarioLogado.role}">${roleLabel[usuarioLogado.role]}</span>`;
-        if (usuarioLogado.role === 'admin') document.getElementById('gerenciar-btn').style.display = 'block';
+        
+        // Mostrar aba gerenciar se for admin
+        if (usuarioLogado.role === 'admin') {
+          document.getElementById('gerenciar-btn').style.display = 'inline-block';
+          carregarUsuarios();
+        }
         carregarFichas();
-        if (usuarioLogado.role === 'admin') carregarUsuarios();
       }
     });
 
